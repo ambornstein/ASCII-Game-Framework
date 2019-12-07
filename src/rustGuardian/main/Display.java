@@ -1,0 +1,167 @@
+package rustGuardian.main;
+
+import java.awt.Point;
+import asciiPanel.AsciiPanel;
+import javafx.geometry.Point3D;
+
+public class Display {
+	private static World world;
+	private static AsciiPanel terminal;
+	private static Point3D frameOrigin;
+	private static Point3D frameDestination;
+	private static Point viewMargin;
+
+	@SuppressWarnings("static-access")
+	public Display(World world, AsciiPanel terminal) {
+		Display.world = world;
+		Display.terminal = terminal;
+		viewMargin = new Point(39, 24);
+	}
+
+	/**
+	 * Wrapper which loops and calls display() over all the chunks that exist in the
+	 * world
+	 */
+	public static void fullDisplay() { // world parameter is irrelevant because a World instance is created in
+										// ApplicationMain
+		// Loops through each chunk and uses display to display it on it's map portion
+		for (int y = 0; y < world.generator().chunkPoint().y; y++) {
+			for (int x = 0; x < world.generator().chunkPoint().x; x++) {
+				display(new RelativePos(x, y, 0, 0, 0)); // display is supplied with the chunk coordinates only
+															// any input of tile coordinates is ignored
+			}
+		}
+	}
+
+	/**
+	 * Primary function displaying the screen by iteration over the
+	 * {@link rustGuardian.main.MapChunk} that is given in arguments. Before
+	 * displaying the {@link rustGuardian.main.Tile} that it finds, the method
+	 * checks to see if the square it is currently iterating over is also the square
+	 * that the player's position is on. If the player is not on the square, it
+	 * proceeds to display the symbol of the tile that occupies the square. Use an
+	 * alternative because this one features broken features from fov scanning
+	 * 
+	 * @param map
+	 *            The map that the method uses to display to the terminal.
+	 * @param fov
+	 *            A scan of the visibility of all of the tiles in the visible
+	 *            radius. Broken in {@link rustGuardian.main.MapChunk.calculateFOV}
+	 */
+	/*
+	 * public static void display(MapChunk map, int[][] fov) { for (int i = 0; i <
+	 * world.generator().worldHeight(); i++) { for (int j = 0; j <
+	 * world.generator().worldWidth(); j++) { if (i ==
+	 * player.getAbsPosition().getY() && j == player.getAbsPosition().getX()) {
+	 * terminal.write(player.symbol(), j, i); } else if (!(i ==
+	 * player.getAbsPosition().getY() && j == player.getAbsPosition().getX())) { if
+	 * (fov[i][j] == 1) terminal.write(map.get(i).get(j).symbol(), j, i); } } } }
+	 */
+
+	/*
+	 * public static void display(MapChunk map) { for (int i = 0; i < map.width();
+	 * i++) { for (int j = 0; j < map.length(); j++) { if (i ==
+	 * player.getAbsPosition().getY() && j == player.getAbsPosition().getX()) {
+	 * terminal.write(player.symbol(), j, i); } else { terminal.write(map.unitAt(new
+	 * Point(j, i)).symbol(), j, i); } } } }
+	 */
+
+	private static boolean inViewLimit(int xProximity, int yProximity) {
+		if (frameOrigin == null || frameDestination == null) {
+			return true;
+		}
+		IMoveable focusObject = EntityContainer.activeEntity();
+		if (focusObject.getAbsPosition().x - frameOrigin.x < xProximity
+				|| focusObject.getAbsPosition().y - frameOrigin.y < yProximity
+				|| frameOrigin.x - focusObject.getAbsPosition().x < xProximity
+				|| frameDestination.y - focusObject.getAbsPosition().y < yProximity) {
+			return true;
+		}
+		return false;
+	}
+
+	public static void playerPerspectiveDisplay() {
+		IMoveable focusObject = EntityContainer.activeEntity();
+		if (inViewLimit(34, viewMargin.y)) {
+			frameOrigin = new Point3D(focusObject.getAbsPosition().getX() - viewMargin.x,
+					focusObject.getAbsPosition().getY() - viewMargin.y, focusObject.getAbsPosition().getZ());
+			frameOrigin = world.correctOutOfBounds(frameOrigin);
+			frameDestination = new Point(viewMargin.x + 1 + viewMargin.x * 2, viewMargin.y + 1 + viewMargin.y * 2);
+		}
+		MapChunk viewChunk = world.subsection(frameOrigin, frameDestination);
+		for (int y = 0; y < viewChunk.width(); y++) {
+			for (int x = 0; x < viewChunk.length(); x++) {
+				Point currentPoint = new Point(x, y);
+				terminal.write(viewChunk.unitAt(currentPoint).symbol(), currentPoint.x, currentPoint.y);
+			}
+		}
+		for (AbstractMoveable f : EntityContainer.getAllVisibleEntity()) {
+			Point focusInScope = new Point(f.getAbsPosition().x - frameOrigin.x, f.getAbsPosition().y - frameOrigin.y);
+			System.out.println(f + "Focus In Scope:" + focusInScope);
+			if (viewChunk.inBounds(focusInScope)) {
+				terminal.write(f.getSymbol(), focusInScope.x, focusInScope.y);
+			}
+		}
+	}
+
+	/**
+	 * Scans a GameMap to display the symbols of its Tiles and the Player
+	 * Encapsulated by fullDisplay(), which calls display for every MapChunk within
+	 * the world This method makes use of the RelativePos object to determine the
+	 * position of Tiles relative to MapChunks
+	 * 
+	 * @param actChunk
+	 *            GameMap that is of tiles for active gameplay display
+	 */
+	private static void display(RelativePos fullPos) {
+		for (int i = 0; i < world.generator().chunkHeight(); i++) {
+			for (int j = 0; j < world.generator().chunkWidth(); j++) {
+				RelativePos thisPos = fullPos.readOnlyShift(j, i);
+				// System.out.println(thisPos.toString());
+				Point absPos = thisPos.toAbs();
+				// System.out.println(absPos);
+				for (AbstractMoveable f : EntityContainer.getAllVisibleEntity()) {
+					if (absPos.equals(f.getAbsPosition())) {
+						terminal.write(f.getSymbol(), absPos.x, absPos.y);
+					} else {
+						terminal.write(thisPos.findTile().symbol(), absPos.x, absPos.y);
+					}
+				}
+			}
+		}
+		// terminal.write("Map Chunk:" + player.actChunkPoint().x + "," +
+		// player.actChunkPoint().y + ";" + player.pos().x + "," + player.pos().y, 40,
+		// 12);
+	}
+
+	/**
+	 * An alternate display method which displays only the MapChunk that the player
+	 * is located in
+	 */
+	/*
+	 * private static void oneScreenDisplay() { //Caves of Qud style display Point
+	 * chunkPoint = player.getRelPosition().chunkPoint(); for (int i = 0; i <
+	 * world.generator().chunkHeight(); i++) { for (int j = 0; j <
+	 * world.generator().chunkWidth(); j++) { Point tilePoint = new Point(j, i); if
+	 * (tilePoint.equals(player.getRelPosition().tilePoint())) {//the equality check
+	 * between player's point and tilePoint terminal.write(player.symbol(),
+	 * tilePoint.x, tilePoint.y); } else {
+	 * terminal.write(world.unitAt(chunkPoint).unitAt(tilePoint).symbol(), j, i); }
+	 * } } }
+	 */
+
+	/**
+	 * Scans an Array to display all of its characters, totally static character
+	 * display Debug function
+	 * 
+	 * @param actChunk
+	 *            Array list of characters for experimental display
+	 */
+	/*
+	 * public static void display(char[][] actChunk) { for (int i = 0; i <
+	 * actChunk.length; i++) { for (int j = 0; j < actChunk[0].length; j++) { if (i
+	 * == player.getAbsPosition().getY() && j == player.getAbsPosition().getX()) {
+	 * terminal.write(player.symbol(), j, i); } else {
+	 * terminal.write(actChunk[i][j], j, i); } } } }
+	 */
+}
