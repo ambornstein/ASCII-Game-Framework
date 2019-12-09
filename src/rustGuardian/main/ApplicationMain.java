@@ -13,9 +13,6 @@ import asciiPanel.AsciiPanel;
  * Roguelike prototype using AsciiPanel for display. Currently has minimal
  * features including a arrow key control system and a map class constructed out
  * of nested character arrays.
- * 
- * Comment like the guy from Memento
- * Because in a few months you will essentially be the guy from Memento
  */
 public class ApplicationMain extends JFrame implements KeyListener {
 	private static final long serialVersionUID = 1060623638149583738L;

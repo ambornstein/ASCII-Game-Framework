@@ -3,7 +3,8 @@ package rustGuardian.main;
 import java.awt.Color;
 
 public enum Tile {
-	WALL(false, false, '#'), FLOOR(true, true, '.'), NULL(false, false, ' '), OPEN_SPACE(true, true, '–', Color.BLUE, Color.WHITE);
+	WALL(false, false, '#'), FLOOR(true, true, '.'), NULL(false, false, ' '), OPEN_SPACE(true, true, '–', Color.BLUE,
+			Color.WHITE);
 	/** Determines Player's ability to make a valid move onto this tile */
 	private boolean passable;
 
@@ -24,15 +25,15 @@ public enum Tile {
 	public char symbol() {
 		return symbol;
 	}
-	
+
 	private Color foregroundColor;
-	
+
 	public Color foregroundColor() {
 		return foregroundColor;
 	}
-	
+
 	private Color backgroundColor;
-	
+
 	public Color backgroundColor() {
 		return backgroundColor;
 	}
@@ -44,7 +45,7 @@ public enum Tile {
 		this.foregroundColor = Color.WHITE;
 		this.backgroundColor = Color.BLACK;
 	}
-	
+
 	Tile(boolean passable, boolean transparent, char symbol, Color foregroundColor, Color backgroundColor) {
 		this.passable = passable;
 		this.transparent = transparent;
