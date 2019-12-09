@@ -25,8 +25,8 @@ public class Display {
 	public static void fullDisplay() { // world parameter is irrelevant because a World instance is created in
 										// ApplicationMain
 		// Loops through each chunk and uses display to display it on it's map portion
-		for (int y = 0; y < world.generator().chunkPoint().y; y++) {
-			for (int x = 0; x < world.generator().chunkPoint().x; x++) {
+		for (int y = 0; y < RelativePos.generator().chunkPoint().y; y++) {
+			for (int x = 0; x < RelativePos.generator().chunkPoint().x; x++) {
 				display(new RelativePos(x, y, 0, 0, 0)); // display is supplied with the chunk coordinates only
 															// any input of tile coordinates is ignored
 			}
@@ -71,10 +71,10 @@ public class Display {
 			return true;
 		}
 		IMoveable focusObject = EntityContainer.activeEntity();
-		if (focusObject.getAbsPosition().x - frameOrigin.x < xProximity
-				|| focusObject.getAbsPosition().y - frameOrigin.y < yProximity
-				|| frameOrigin.x - focusObject.getAbsPosition().x < xProximity
-				|| frameDestination.y - focusObject.getAbsPosition().y < yProximity) {
+		if (focusObject.getAbsPosition().getX() - frameOrigin.getX() < xProximity
+				|| focusObject.getAbsPosition().getY() - frameOrigin.getY() < yProximity
+				|| frameOrigin.getX() - focusObject.getAbsPosition().getX() < xProximity
+				|| frameDestination.getY() - focusObject.getAbsPosition().getY() < yProximity) {
 			return true;
 		}
 		return false;
@@ -85,7 +85,7 @@ public class Display {
 		if (inViewLimit(34, viewMargin.y)) {
 			frameOrigin = new Point3D(focusObject.getAbsPosition().getX() - viewMargin.x,
 					focusObject.getAbsPosition().getY() - viewMargin.y, focusObject.getAbsPosition().getZ());
-			frameOrigin = world.correctOutOfBounds(frameOrigin);
+			frameOrigin = RelativePos.correctOutOfBounds(frameOrigin);
 			frameDestination = new Point(viewMargin.x + 1 + viewMargin.x * 2, viewMargin.y + 1 + viewMargin.y * 2);
 		}
 		MapChunk viewChunk = world.subsection(frameOrigin, frameDestination);
@@ -114,8 +114,8 @@ public class Display {
 	 *            GameMap that is of tiles for active gameplay display
 	 */
 	private static void display(RelativePos fullPos) {
-		for (int i = 0; i < world.generator().chunkHeight(); i++) {
-			for (int j = 0; j < world.generator().chunkWidth(); j++) {
+		for (int i = 0; i < RelativePos.generator().chunkPoint().y; i++) {
+			for (int j = 0; j < RelativePos.generator().chunkPoint().x; j++) {
 				RelativePos thisPos = fullPos.readOnlyShift(j, i);
 				// System.out.println(thisPos.toString());
 				Point absPos = thisPos.toAbs();

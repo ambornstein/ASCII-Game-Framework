@@ -29,25 +29,29 @@ public class World extends AbstractGrid2D<MapChunk> {
 		create();
 	}
 
-	/*
-	 * public MapChunk subsection(Point3D startCorner, Point3D endCorner) { //copies
-	 * all of the tiles from the startCorner to the endCorner startCorner =
-	 * RelativePos.correctOutOfBounds(startCorner); //Correct positions that are out
-	 * of the bounds of the world RelativePos startCornerRel =
-	 * RelativePos.toRel(startCorner); //Make Relative copies of both for future
-	 * compare() endCorner = RelativePos.correctOutOfBounds(endCorner); RelativePos
-	 * endCornerRel = RelativePos.toRel(endCorner); Point3D deltaPos = new
-	 * Point3D(endCorner.getX() - startCorner.getX(), endCorner.getY() -
-	 * startCorner.getY(), endCorner.getZ() - startCorner.getZ()); MapChunk
-	 * returnChunk = new MapChunk(deltaPos.getX(), deltaPos.getY(),
-	 * deltaPos.getZ()); if(endCornerRel.compare(startCornerRel) == -1) { for(int z
-	 * = (int) startCorner.getZ(); z < endCorner.getZ(); z++) { for(int y = (int)
-	 * startCorner.getY(); y < endCorner.getY(); y++) { for(int x = (int)
-	 * startCorner.getX(); x < endCorner.getX(); x++) { RelativePos findTile =
-	 * RelativePos.toRel(new Point3D(x, y, z)); returnChunk.place(new Point3D(x -
-	 * startCorner.getX(),y - startCorner.getY(),z - startCorner.getZ()),
-	 * findTile.findTile()); } } } return returnChunk; } return null; }
-	 */
+
+	public MapChunk subsection(Point3D startCorner, Point3D endCorner) { //copies all of the tiles from the startCorner to the endCorner
+		startCorner = RelativePos.correctOutOfBounds(startCorner); //Correct positions that are out of the bounds of the world
+		RelativePos startCornerRel = RelativePos.toRel(startCorner); //Make Relative copies of both for future compare()
+		endCorner = RelativePos.correctOutOfBounds(endCorner);
+		RelativePos endCornerRel = RelativePos.toRel(endCorner);
+		Point3D deltaPos = new Point3D(endCorner.getX()-startCorner.getX(), endCorner.getY()-startCorner.getY(), endCorner.getZ()-startCorner.getZ());
+		MapChunk
+		returnChunk = new MapChunk(deltaPos.getX(), deltaPos.getY(),deltaPos.getZ());
+		if(endCornerRel.compare(startCornerRel) == -1) {
+			for(int z = (int) startCorner.getZ(); z < endCorner.getZ(); z++) {
+				for(int y = (int)startCorner.getY(); y < endCorner.getY(); y++) {
+					for(int x = (int)startCorner.getX(); x < endCorner.getX(); x++) {
+						RelativePos findTile = RelativePos.toRel(new Point3D(x, y, z));
+						returnChunk.place(new Point3D(x-startCorner.getX(),y - startCorner.getY(),z - startCorner.getZ()),findTile.findTile());
+						}
+					}
+				}
+			return returnChunk;
+		} 
+		return null;
+		}
+		 
 
 	private void flagBorders() {
 		PointSet borderSet;
