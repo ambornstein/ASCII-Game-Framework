@@ -1,5 +1,8 @@
 package rustGuardian.test;
 
+import static org.junit.Assert.assertFalse;
+import org.junit.*;
+
 import javafx.geometry.Point3D;
 import rustGuardian.main.PointSet;
 

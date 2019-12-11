@@ -1,5 +1,9 @@
 package rustGuardian.test;
 
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Test;
+
 import rustGuardian.main.EntityContainer;
 
 class EntityContainerTest {

@@ -1,5 +1,7 @@
 package rustGuardian.test;
 
+import org.junit.Test;
+
 class GridInterfaceTest {
 
 	@Test

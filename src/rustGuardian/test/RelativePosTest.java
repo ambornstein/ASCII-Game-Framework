@@ -1,6 +1,11 @@
 package rustGuardian.test;
 
+import static org.junit.Assert.assertTrue;
+
 import java.awt.Point;
+
+import org.junit.jupiter.api.Test;
+
 import javafx.geometry.Point3D;
 import rustGuardian.main.RelativePos;
 

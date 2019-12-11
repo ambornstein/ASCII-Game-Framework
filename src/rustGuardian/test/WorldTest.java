@@ -1,5 +1,7 @@
 package rustGuardian.test;
 
+import org.junit.Test;
+
 import javafx.geometry.Point3D;
 import rustGuardian.main.Direction;
 import rustGuardian.main.RelativePos;
