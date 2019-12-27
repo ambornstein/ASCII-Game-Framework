@@ -9,6 +9,10 @@ public class Cursor extends AbstractMoveable {
 		super.setPos(new Point3D(posToClone.getX(), posToClone.getY(), posToClone.getZ())); 
 		//must dissassemble this Point3D because Point3D has no copy-constructor or clone()
 	}
+	
+	public Cursor(Point3D loc) {
+		super(loc, false, 'X', true);
+	}
 
 	@Override
 	public void move(Direction d) {

@@ -27,6 +27,11 @@ public abstract class AbstractMoveable implements IMoveable {
 	public void setPos(Point3D newPos) {
 		absPosition = new Point3D(newPos.getX(), newPos.getY(), newPos.getZ());
 	}
+	
+	public void setPos(RelativePos newPos) {
+		absPosition = new Point3D(newPos.toAbs().getX(), newPos.toAbs().getY(), newPos.toAbs().getZ());
+	}
+	
 
 	@Override
 	public boolean getVisible() {
@@ -46,7 +51,16 @@ public abstract class AbstractMoveable implements IMoveable {
 			this.setPos(placePoint);
 		} else {
 			System.out.println("Constrained Moveable : " + this + "blocked from placement at + " + placePoint + " by "
-					+ RelativePos.toRel(placePoint));
+					+ RelativePos.toRel(placePoint) + " : " + RelativePos.toRel(placePoint).findTile());
+		}
+	}
+	
+	public void placeMovable(RelativePos placeRel) {
+		if (passBarriers || placeRel.findTile().passable()) {
+			this.setPos(placeRel);
+		} else {
+			System.out.println("Constrained Moveable : " + this + "blocked from placement at + " + placeRel.toAbs() + " by "
+					+ placeRel.findTile() + " : " + placeRel);
 		}
 	}
 

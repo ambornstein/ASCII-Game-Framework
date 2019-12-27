@@ -13,8 +13,9 @@ public class EntityContainer {
 	public EntityContainer(World world) {
 		entityDir = new HashSet<AbstractMoveable>();
 		entityDir.add(new Player(new Point3D(2, 2, 1)));
-		entityDir.add(new Cursor());
 		playerActivate();
+		entityDir.add(new Cursor(activeEntity.getAbsPosition()));
+		
 	}
 
 	public static void setWorld(World worldToSet) {
