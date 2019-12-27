@@ -11,5 +11,5 @@ public interface GridInterface<E> {
 
 	public void fill();
 
-	public E unitAt(Point pos);
+	public E unitAt(Point loc);
 }

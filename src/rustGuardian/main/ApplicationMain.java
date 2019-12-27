@@ -26,9 +26,10 @@ public class ApplicationMain extends JFrame implements KeyListener {
 		terminal = new AsciiPanel(80, 50, AsciiFont.CP437_12x12);
 		terminal.setFocusable(true);
 		terminal.addKeyListener(this);
+		RelativePos.makeWorld();
 		add(terminal);
 		new Control();
-		new Display(world, terminal);
+		new Display(terminal);
 		this.setTitle("Rust Guardian");
 		pack();
 		refresh();

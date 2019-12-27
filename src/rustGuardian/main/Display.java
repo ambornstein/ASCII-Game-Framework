@@ -11,9 +11,8 @@ public class Display {
 	private static Point3D frameDestination;
 	private static Point viewMargin;
 
-	@SuppressWarnings("static-access")
-	public Display(World world, AsciiPanel terminal) {
-		Display.world = world;
+	public Display(AsciiPanel terminal) {
+		Display.world = RelativePos.generalWorld();
 		Display.terminal = terminal;
 		viewMargin = new Point(39, 24);
 	}
@@ -66,11 +65,17 @@ public class Display {
 	 * Point(j, i)).symbol(), j, i); } } } }
 	 */
 
-	private static boolean inViewLimit(int xProximity, int yProximity) {
+	/**Returns the truth value of if 
+	 * 
+	 * @param xProximity
+	 * @param yProximity
+	 * @param focusObject
+	 * @return
+	 */
+	private static boolean inViewLimit(int xProximity, int yProximity, IMoveable focusObject) {
 		if (frameOrigin == null || frameDestination == null) {
 			return true;
 		}
-		IMoveable focusObject = EntityContainer.activeEntity();
 		if (focusObject.getAbsPosition().getX() - frameOrigin.getX() < xProximity
 				|| focusObject.getAbsPosition().getY() - frameOrigin.getY() < yProximity
 				|| frameOrigin.getX() - focusObject.getAbsPosition().getX() < xProximity
@@ -82,11 +87,11 @@ public class Display {
 
 	public static void playerPerspectiveDisplay() {
 		IMoveable focusObject = EntityContainer.activeEntity();
-		if (inViewLimit(34, viewMargin.y)) {
+		if (inViewLimit(viewMargin.x, viewMargin.y, focusObject)) {
 			frameOrigin = new Point3D(focusObject.getAbsPosition().getX() - viewMargin.x,
 					focusObject.getAbsPosition().getY() - viewMargin.y, focusObject.getAbsPosition().getZ());
 			frameOrigin = RelativePos.correctOutOfBounds(frameOrigin);
-			frameDestination = new Point(viewMargin.x + 1 + viewMargin.x * 2, viewMargin.y + 1 + viewMargin.y * 2);
+			frameDestination = new Point3D(viewMargin.x + 1 + viewMargin.x * 2, viewMargin.y + 1 + viewMargin.y * 2, frameOrigin.getZ());
 		}
 		MapChunk viewChunk = world.subsection(frameOrigin, frameDestination);
 		for (int y = 0; y < viewChunk.width(); y++) {
@@ -96,10 +101,11 @@ public class Display {
 			}
 		}
 		for (AbstractMoveable f : EntityContainer.getAllVisibleEntity()) {
-			Point focusInScope = new Point(f.getAbsPosition().x - frameOrigin.x, f.getAbsPosition().y - frameOrigin.y);
-			System.out.println(f + "Focus In Scope:" + focusInScope);
-			if (viewChunk.inBounds(focusInScope)) {
-				terminal.write(f.getSymbol(), focusInScope.x, focusInScope.y);
+			Point3D focusInScope = new Point3D((int)(f.getAbsPosition().getX() - frameOrigin.getX()),
+					(int)(f.getAbsPosition().getY() - frameOrigin.getY()), (int)(f.getAbsPosition().getZ() - frameOrigin.getZ()));
+			//System.out.println(f + "Focus In Scope:" + focusInScope);
+			if (focusInScope.getX() <= viewChunk.length() && focusInScope.getY() <= viewChunk.width() && focusInScope.getZ() == 0) {
+				terminal.write(f.getSymbol(), (int)focusInScope.getX(), (int)focusInScope.getY());
 			}
 		}
 	}
@@ -116,15 +122,15 @@ public class Display {
 	private static void display(RelativePos fullPos) {
 		for (int i = 0; i < RelativePos.generator().chunkPoint().y; i++) {
 			for (int j = 0; j < RelativePos.generator().chunkPoint().x; j++) {
-				RelativePos thisPos = fullPos.readOnlyShift(j, i);
+				RelativePos thisPos = fullPos.readOnlyShift(j, i, 0);
 				// System.out.println(thisPos.toString());
-				Point absPos = thisPos.toAbs();
+				Point3D absPos = thisPos.toAbs();
 				// System.out.println(absPos);
 				for (AbstractMoveable f : EntityContainer.getAllVisibleEntity()) {
 					if (absPos.equals(f.getAbsPosition())) {
-						terminal.write(f.getSymbol(), absPos.x, absPos.y);
+						terminal.write(f.getSymbol(), (int)absPos.getX(), (int)absPos.getY());
 					} else {
-						terminal.write(thisPos.findTile().symbol(), absPos.x, absPos.y);
+						terminal.write(thisPos.findTile().symbol(), (int)absPos.getX(), (int)absPos.getY());
 					}
 				}
 			}

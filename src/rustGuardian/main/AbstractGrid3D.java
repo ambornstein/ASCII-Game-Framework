@@ -38,8 +38,8 @@ public abstract class AbstractGrid3D<E> extends ArrayList<ArrayList<ArrayList<E>
 	}
 
 	@Override
-	public E unitAt(Point pos) {
-		return unitAt(new Point3D(pos.x, pos.y, 0));
+	public E unitAt(Point loc) {
+		return unitAt(new Point3D(loc.x, loc.y, 0));
 	}
 
 	public boolean unitConnect(Point3D loc, Direction dir) {

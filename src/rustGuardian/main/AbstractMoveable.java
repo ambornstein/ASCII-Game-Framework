@@ -37,7 +37,10 @@ public abstract class AbstractMoveable implements IMoveable {
 	public void setVisible(boolean newVis) {
 		visible = newVis;
 	}
-
+	/**
+	 * 
+	 * @param placePoint An absolute point representing what map tile the object will be placed on
+	 */
 	public void placeMoveable(Point3D placePoint) {
 		if (passBarriers || RelativePos.toRel(placePoint).findTile().passable()) {
 			this.setPos(placePoint);
@@ -52,18 +55,8 @@ public abstract class AbstractMoveable implements IMoveable {
 		RelativePos rel = RelativePos.toRel(absPosition.add(d.offSet())); // Convert to relative in order to access the
 																			// methods required for the next if
 																			// statement
-		if ((passBarriers || rel.findTile().passable()) && RelativePos.generator().compare(rel) == -1) { // if object is
-																											// constrained
-																											// by
-																											// boundaries,
-																											// test the
-																											// passability
-																											// of
-																											// the tile
-																											// to move
-																											// to, and
-																											// if it is
-																											// in bounds
+		if ((passBarriers || rel.findTile().passable()) && RelativePos.generator().compare(rel) == -1) { 
+			// if object is constrained by boundaries, test the passability of the tile to move to, and if it is in bounds
 			absPosition = absPosition.add(d.offSet()); // the test is passed, allowing the real position to be changed
 			ApplicationMain.refresh();
 		}
