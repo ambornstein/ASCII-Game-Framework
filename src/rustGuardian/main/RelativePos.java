@@ -50,9 +50,9 @@ public class RelativePos {
 	 * @return world Resulting World
 	 */
 	public static World makeWorld() {
-		System.out.println("Made World from default.");
 		RelativePos.setGenerator(new RelativePos(2, 2, 40, 25, 5));
 		World world = new World(generator);
+		world.create();
 		generalWorld = world;
 		new EntityContainer(world);
 		return world;
@@ -66,6 +66,7 @@ public class RelativePos {
 	public static World makeWorld(RelativePos generator) {
 		RelativePos.setGenerator(generator);
 		World world = new World(generator);
+		world.create();
 		generalWorld = world;
 		new EntityContainer(world);
 		return world;
@@ -86,7 +87,7 @@ public class RelativePos {
 
 	public RelativePos(Point chunkPoint, Point tilePoint) {
 		this.chunkPoint = chunkPoint;
-		this.tilePoint = new Point3D(tilePoint.x, tilePoint.y, 0);
+		this.tilePoint = new Point3D(tilePoint.x, tilePoint.y, 5);
 	}
 
 	public RelativePos(Point chunkPoint, Point3D tilePoint) {
@@ -158,7 +159,7 @@ public class RelativePos {
 	@Override
 	public RelativePos clone() {
 		return new RelativePos((Point) chunkPoint.clone(),
-				new Point3D(tilePoint.getX(), tilePoint.getY(), tilePoint.getZ()));
+			new Point3D(tilePoint.getX(), tilePoint.getY(), tilePoint.getZ()));
 	}
 
 	/**
@@ -171,10 +172,11 @@ public class RelativePos {
 	 */
 	public static RelativePos toRel(Point3D absPoint) {
 		Point chunkLoc = new Point(
-				(int) Math.floor(absPoint.getX() / (generator.tilePoint.getX() + 1)), // Finds out what chunk the absPoint falls in
-				(int) Math.floor(absPoint.getY() / (generator.tilePoint.getY() + 1))); // Can't use ceiling because the ceiling of 0 is 0
-		Point3D tileLoc = new Point3D(absPoint.getX() + 1 - (generator.tilePoint.getX() * (chunkLoc.x - 1)), 
-				absPoint.getY() + 1 - (generator.tilePoint.getY() * (chunkLoc.y - 1)), absPoint.getZ() + 1);
+				(int) Math.floor((absPoint.getX()) / generator.tilePoint.getX())+1, // Finds out what chunk the absPoint falls in
+				(int) Math.floor((absPoint.getY()) / generator.tilePoint.getY())+1); // Can't use ceiling because the ceiling of 0 is 0
+		Point3D tileLoc = new Point3D(
+				((absPoint.getX() + 1) - ((generator.tilePoint.getX() - 1) * (chunkLoc.x-1))), 
+				((absPoint.getY() + 1) - ((generator.tilePoint.getY() - 1) * (chunkLoc.y-1))), absPoint.getZ()+1);
 		// Cuts off the amount of tiles that are outside this chunk
 		return new RelativePos(chunkLoc, tileLoc);
 	}
@@ -221,33 +223,6 @@ public class RelativePos {
 		Point3D utilAbs = returnPos.toAbs();
 		utilAbs.add(xShift, yShift, zShift);
 		return RelativePos.toRel(utilAbs);
-	}
-
-	/**
-	 * Returns the tile that corresponds to the position that this RelativePos
-	 * represents in the parameter world
-	 * 
-	 * @param world
-	 *            The world to look for the tile in.
-	 * @return If this RelativePos is a valid location in the World, it returns a
-	 *         regular Tile, else it returns Tile.NULL, a null tile.
-	 */
-	public Tile findTile() {
-		if (generator.compare(this) == -1 && generalWorld != null) { // this is less than but does not exceed bounds
-			return generalWorld.unitAt(new Point(chunkPoint.x - 1, chunkPoint.y - 1))
-					.unitAt(new Point3D(tilePoint.getX() - 1, tilePoint.getY() - 1, tilePoint.getZ() - 1));
-		}
-		return Tile.NULL;
-	}
-
-	public void placeTile(Tile tile) {
-		if (generator.compare(this) == -1 && generalWorld != null) { // this is less than but does not exceed bounds
-			generalWorld.unitAt(new Point(chunkPoint.x - 1, chunkPoint.y - 1))
-					.place(new Point3D(tilePoint.getX() - 1, tilePoint.getY() - 1, tilePoint.getZ() - 1), tile);
-		} else {
-			System.out.println("Invalid place position: " + this + ":" + (generator.compare(this) == -1) + ";"
-					+ (generalWorld != null));
-		}
 	}
 
 	@Override

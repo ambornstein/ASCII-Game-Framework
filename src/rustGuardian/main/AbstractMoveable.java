@@ -7,7 +7,35 @@ public abstract class AbstractMoveable implements IMoveable {
 	protected char symbol;
 	protected boolean passBarriers;
 	protected Point3D absPosition;
+	
+	public AbstractMoveable(RelativePos relPoint) {
+		placeMoveable(relPoint);
+		visible = false;
+		symbol = ' ';
+		passBarriers = true;
+	}
+	
+	public AbstractMoveable(Point3D startPoint) {
+		placeMoveable(startPoint);
+		visible = false;
+		symbol = ' ';
+		passBarriers = true;
+	}
+	
+	public AbstractMoveable(RelativePos relPoint, boolean visible, char symbol, boolean passBarriers) {
+		placeMoveable(relPoint);
+		this.visible = visible;
+		this.symbol = symbol;
+		this.passBarriers = passBarriers;
+	}
 
+	public AbstractMoveable(Point3D startPoint, boolean visible, char symbol, boolean passBarriers) {
+		placeMoveable(startPoint);
+		this.visible = visible;
+		this.symbol = symbol;
+		this.passBarriers = passBarriers;
+	}
+	
 	@Override
 	public char getSymbol() {
 		return symbol;
@@ -47,20 +75,16 @@ public abstract class AbstractMoveable implements IMoveable {
 	 * @param placePoint An absolute point representing what map tile the object will be placed on
 	 */
 	public void placeMoveable(Point3D placePoint) {
-		if (passBarriers || RelativePos.toRel(placePoint).findTile().passable()) {
-			this.setPos(placePoint);
-		} else {
-			System.out.println("Constrained Moveable : " + this + "blocked from placement at + " + placePoint + " by "
-					+ RelativePos.toRel(placePoint) + " : " + RelativePos.toRel(placePoint).findTile());
-		}
+		System.out.println(placePoint);
+		placeMoveable(RelativePos.toRel(placePoint));
 	}
 	
-	public void placeMovable(RelativePos placeRel) {
-		if (passBarriers || placeRel.findTile().passable()) {
-			this.setPos(placeRel);
+	private void placeMoveable(RelativePos relPoint) {
+		if (passBarriers || RelativePos.generalWorld().relativeFindTile(relPoint).passable()) {
+			this.setPos(relPoint);
 		} else {
-			System.out.println("Constrained Moveable : " + this + "blocked from placement at + " + placeRel.toAbs() + " by "
-					+ placeRel.findTile() + " : " + placeRel);
+			System.out.println("Constrained Moveable : " + this + "blocked from placement at + " + relPoint.toAbs() + " by "
+					+ RelativePos.generalWorld().relativeFindTile(relPoint) + " : " + relPoint);
 		}
 	}
 
@@ -69,24 +93,12 @@ public abstract class AbstractMoveable implements IMoveable {
 		RelativePos rel = RelativePos.toRel(absPosition.add(d.offSet())); // Convert to relative in order to access the
 																			// methods required for the next if
 																			// statement
-		if ((passBarriers || rel.findTile().passable()) && RelativePos.generator().compare(rel) == -1) { 
+		if ((passBarriers || RelativePos.generalWorld().relativeFindTile(rel).passable()) && RelativePos.generator().compare(rel) == -1) { 
 			// if object is constrained by boundaries, test the passability of the tile to move to, and if it is in bounds
 			absPosition = absPosition.add(d.offSet()); // the test is passed, allowing the real position to be changed
 			ApplicationMain.refresh();
 		}
 	}
 
-	public AbstractMoveable(Point3D startPoint) {
-		placeMoveable(startPoint);
-		visible = false;
-		symbol = ' ';
-		passBarriers = true;
-	}
-
-	public AbstractMoveable(Point3D startPoint, boolean visible, char symbol, boolean passBarriers) {
-		placeMoveable(startPoint);
-		this.visible = visible;
-		this.symbol = symbol;
-		this.passBarriers = passBarriers;
-	}
+	
 }

@@ -43,11 +43,11 @@ public class MapChunk extends AbstractGrid3D<Tile> {
 	 */
 	@Override
 	public void fill() {
-		for (int a = 0; a <= super.width(); a++) {
+		for (int a = 0; a <= super.height(); a++) {
 			add(new ArrayList<ArrayList<Tile>>());
-			for (int b = 0; b <= super.length(); b++) {
+			for (int b = 0; b <= super.width(); b++) {
 				get(a).add(new ArrayList<Tile>());
-				for (int c = 0; c <= super.height(); c++) {
+				for (int c = 0; c <= super.length(); c++) {
 					get(a).get(b).add(fillStruct);
 				}
 			}

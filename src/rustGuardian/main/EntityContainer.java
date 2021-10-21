@@ -9,13 +9,12 @@ public class EntityContainer {
 														// specific
 	public static AbstractMoveable activeEntity; // The active entity that will be controllable
 	public static World world;
-
+	
 	public EntityContainer(World world) {
 		entityDir = new HashSet<AbstractMoveable>();
-		entityDir.add(new Player(new Point3D(2, 2, 1)));
-		playerActivate();
-		entityDir.add(new Cursor(activeEntity.getAbsPosition()));
-		
+		Player player = new Player(new RelativePos(1, 1, 3, 3, 3));
+		addEntity(player);
+		addEntity(new Cursor(player.getRelPosition()));
 	}
 
 	public static void setWorld(World worldToSet) {
@@ -25,9 +24,20 @@ public class EntityContainer {
 	public static World getWorld() {
 		return world;
 	}
+	
+	public static void addEntity(AbstractMoveable entity) {
+		if (entityDir.isEmpty()) {
+			activeEntity = entity;
+		}
+		entityDir.add(entity);
+	}
 
 	public static void setActiveEntity(AbstractMoveable newEntity) {
 		activeEntity = newEntity;
+	}
+	
+	public static void playerActivate() {
+		setActiveEntity(getDefaultPlayerEntity());
 	}
 
 	public static IMoveable activeEntity() {
@@ -37,10 +47,6 @@ public class EntityContainer {
 	public static void cursorActivate() {
 		setActiveEntity(getDefaultCursorEntity());
 		activeEntity.setPos(getDefaultPlayerEntity().getAbsPosition());
-	}
-
-	public static void playerActivate() {
-		setActiveEntity(getDefaultPlayerEntity());
 	}
 
 	public static AbstractMoveable getDefaultPlayerEntity() { // The system is bullshit and must be changed quick

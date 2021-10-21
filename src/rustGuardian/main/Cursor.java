@@ -13,6 +13,10 @@ public class Cursor extends AbstractMoveable {
 	public Cursor(Point3D loc) {
 		super(loc, false, 'X', true);
 	}
+	
+	public Cursor(RelativePos loc) {
+		super(loc.toAbs(), false, 'X', true);
+	}
 
 	@Override
 	public void move(Direction d) {

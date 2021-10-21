@@ -11,6 +11,10 @@ import javafx.geometry.Point3D;
  */
 public class PointSet extends HashSet<Point3D> {
 	private static final long serialVersionUID = 1L;
+	
+	public PointSet(Point3D startCorner, Point3D endCorner) {
+		construct(startCorner, endCorner);
+	}
 
 	public void construct(Point3D startCorner, Point3D endCorner) { // copies all of the tiles from the startCorner to
 																	// the endCorner to this PointSet
@@ -33,10 +37,6 @@ public class PointSet extends HashSet<Point3D> {
 		}
 	}
 
-	public PointSet(Point3D startCorner, Point3D endCorner) {
-		construct(startCorner, endCorner);
-	}
-
 	// Should be rewritten to generalize later, once it becomes evident what other
 	// grids should be copied
 	public MapChunk copyGrid(Point3D startPoint, Point3D endPoint) {
@@ -49,7 +49,7 @@ public class PointSet extends HashSet<Point3D> {
 		MapChunk returnChunk = new MapChunk(deltaPoint);
 		forEach((Point3D p) -> returnChunk.place(
 				new Point3D(p.getX() - startPoint.getX(), p.getY() - startPoint.getY(), p.getZ() - startPoint.getZ()),
-				RelativePos.toRel(p).findTile()));
+				RelativePos.generalWorld().absoluteFindTile(p)));
 		return returnChunk;
 	}
 }

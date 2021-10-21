@@ -6,44 +6,70 @@ import javafx.geometry.Point3D;
 
 public class World extends AbstractGrid2D<MapChunk> {
 	private static final long serialVersionUID = 1060623638149583738L;
-
+	
+	public World(RelativePos gen) {
+		super(gen.chunkPoint());
+	}
+	
 	@Override
 	public void fill() {
-		for (int y = 0; y < super.width(); y++) {
+		for (int y = 0; y <= super.width(); y++) {
 			add(new ArrayList<MapChunk>());
-			for (int x = 0; x < super.length(); x++) {
+			for (int x = 0; x <= super.length(); x++) {
 				get(y).add(new MapChunk(RelativePos.generator().tilePoint())); // Each placement needs to be a new
 																				// MapChunk
 			}
 		}
 	}
+	
+	public void absolutePlace(Point3D loc, Tile unit) {
+		relativePlace(RelativePos.toRel(loc), unit);
+	}
+	
+	public void relativePlace(RelativePos loc, Tile unit) {
+		Point chunkLoc = Util.decrement(loc.chunkPoint());
+		try {
+			unitAt(chunkLoc).place(Util.decrement(loc.tilePoint()), unit);
+		}
+		catch (IndexOutOfBoundsException i) {
+			absolutePlace(RelativePos.correctOutOfBounds(loc.toAbs()), unit);
+		}
+	}
+	
+	public Tile absoluteFindTile(Point3D loc) {
+		return relativeFindTile(RelativePos.toRel(loc));
+	}
+	
+	public Tile relativeFindTile(RelativePos loc) {
+		Point chunkLoc = new Point(loc.chunkPoint().x - 1, loc.chunkPoint().y - 1);
+		Point3D tileLoc = new Point3D(loc.tilePoint().getX() - 1, loc.tilePoint().getY() - 1, loc.tilePoint().getZ());
+		try {
+			return unitAt(chunkLoc).unitAt(tileLoc);
+		}
+		catch (IndexOutOfBoundsException i) {
+			System.out.println("Location out of bounds:" + loc);
+			return null;
+		}
+	}
 
-	private void create() { // Wrapper function that calls all functions that generate the world
+	public void create() { // Wrapper function that calls all functions that generate the world
 		// fill() must be called here and not in Abst
 		fill();
 		flagBorders();
 	}
-
-	public World(RelativePos gen) {
-		super(gen.chunkPoint());
-		create();
-	}
-
 
 	public MapChunk subsection(Point3D startCorner, Point3D endCorner) { //copies all of the tiles from the startCorner to the endCorner
 		startCorner = RelativePos.correctOutOfBounds(startCorner); //Correct positions that are out of the bounds of the world
 		RelativePos startCornerRel = RelativePos.toRel(startCorner); //Make Relative copies of both for future compare()
 		endCorner = RelativePos.correctOutOfBounds(endCorner);
 		RelativePos endCornerRel = RelativePos.toRel(endCorner);
-		Point3D deltaPos = new Point3D(endCorner.getX()-startCorner.getX(), endCorner.getY()-startCorner.getY(), endCorner.getZ()-startCorner.getZ());
-		MapChunk
-		returnChunk = new MapChunk(deltaPos.getX(), deltaPos.getY(),deltaPos.getZ());
+		Point3D deltaPos = endCorner.subtract(startCorner);
+		MapChunk returnChunk = new MapChunk(deltaPos);
 		if(endCornerRel.compare(startCornerRel) == -1) {
-			for(int z = (int) startCorner.getZ(); z < endCorner.getZ(); z++) {
-				for(int y = (int)startCorner.getY(); y < endCorner.getY(); y++) {
-					for(int x = (int)startCorner.getX(); x < endCorner.getX(); x++) {
-						RelativePos findTile = RelativePos.toRel(new Point3D(x, y, z));
-						returnChunk.place(new Point3D(x-startCorner.getX(),y - startCorner.getY(),z - startCorner.getZ()),findTile.findTile());
+			for(int z = 0; z <= deltaPos.getZ(); z++) {
+				for(int y = 0; y <= deltaPos.getY(); y++) {
+					for(int x = 0; x <= deltaPos.getX(); x++) {
+						returnChunk.place(new Point3D(x,y,z), absoluteFindTile(new Point3D(x+startCorner.getX(),y+startCorner.getY(),z+startCorner.getZ())));
 						}
 					}
 				}
@@ -63,12 +89,9 @@ public class World extends AbstractGrid2D<MapChunk> {
 					dims.getY() + (dims.getY() * dir.offSet().getY()),
 					dims.getZ() + (dims.getZ() * dir.offSet().getZ()));
 			borderSet = new PointSet(originCorner, destinationCorner);
-			borderSet.forEach(point -> System.out.println(point));
+			//borderSet.forEach(point -> System.out.println(point));
 			borderSet.forEach(point -> {
-				RelativePos pointRel = RelativePos.toRel(point);
-				unitAt(new Point(pointRel.chunkPoint().x - 1, pointRel.chunkPoint().y - 1))
-						.place(new Point3D(pointRel.tilePoint().getX() - 1, pointRel.tilePoint().getY() - 1,
-								pointRel.tilePoint().getZ() - 1), Tile.WALL);
+				absolutePlace(point, Tile.WALL);
 			});
 		}
 	}

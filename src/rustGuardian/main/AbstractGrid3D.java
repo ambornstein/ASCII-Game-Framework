@@ -30,9 +30,9 @@ public abstract class AbstractGrid3D<E> extends ArrayList<ArrayList<ArrayList<E>
 
 	public E unitAt(Point3D loc) {
 		try {
-			return get((int) loc.getY()).get((int) loc.getX()).get((int) loc.getZ());
+			return get((int)loc.getZ()).get((int) loc.getY()).get((int) loc.getX());
 		} catch (IndexOutOfBoundsException e) {
-			System.out.println("Out of bounds in 3D Grid:" + loc);
+			System.out.println("Out of bounds in 3D Grid:" + loc + " | Limit: " + new Point3D(length, width, height));
 			return null;
 		}
 	}
@@ -53,9 +53,9 @@ public abstract class AbstractGrid3D<E> extends ArrayList<ArrayList<ArrayList<E>
 
 	public void place(Point3D loc, E unit) {
 		try {
-			get((int) loc.getY()).get((int) loc.getX()).set((int) loc.getZ(), unit);
+			get((int) loc.getZ()).get((int) loc.getY()).set((int) loc.getX(), unit);
 		} catch (IndexOutOfBoundsException i) {
-			place(RelativePos.correctOutOfBounds(loc), unit);
+			System.out.println("Unable to place tile " + unit + " in 3D Grid:" + loc + " | Limit: " + new Point3D(length, width, height));
 		}
 	}
 

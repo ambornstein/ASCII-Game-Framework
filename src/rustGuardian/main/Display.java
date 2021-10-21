@@ -14,7 +14,7 @@ public class Display {
 	public Display(AsciiPanel terminal) {
 		Display.world = RelativePos.generalWorld();
 		Display.terminal = terminal;
-		viewMargin = new Point(39, 24);
+		viewMargin = new Point(39,24);//(int)RelativePos.generator().tilePoint().getX(), (int)RelativePos.generator().tilePoint().getY()
 	}
 
 	/**
@@ -76,9 +76,9 @@ public class Display {
 		if (frameOrigin == null || frameDestination == null) {
 			return true;
 		}
-		if (focusObject.getAbsPosition().getX() - frameOrigin.getX() < xProximity
-				|| focusObject.getAbsPosition().getY() - frameOrigin.getY() < yProximity
-				|| frameOrigin.getX() - focusObject.getAbsPosition().getX() < xProximity
+		if (focusObject.getAbsPosition().getX() - frameOrigin.getX() <= xProximity
+				|| focusObject.getAbsPosition().getY() - frameOrigin.getY() <= yProximity
+				|| frameOrigin.getX() - focusObject.getAbsPosition().getX() <= xProximity
 				|| frameDestination.getY() - focusObject.getAbsPosition().getY() < yProximity) {
 			return true;
 		}
@@ -91,13 +91,19 @@ public class Display {
 			frameOrigin = new Point3D(focusObject.getAbsPosition().getX() - viewMargin.x,
 					focusObject.getAbsPosition().getY() - viewMargin.y, focusObject.getAbsPosition().getZ());
 			frameOrigin = RelativePos.correctOutOfBounds(frameOrigin);
-			frameDestination = new Point3D(viewMargin.x + 1 + viewMargin.x * 2, viewMargin.y + 1 + viewMargin.y * 2, frameOrigin.getZ());
+			frameDestination = new Point3D(viewMargin.x + viewMargin.x * 2, viewMargin.y + viewMargin.y * 2, frameOrigin.getZ());
 		}
 		MapChunk viewChunk = world.subsection(frameOrigin, frameDestination);
-		for (int y = 0; y < viewChunk.width(); y++) {
-			for (int x = 0; x < viewChunk.length(); x++) {
+		System.out.println(viewChunk.size());
+		for (int y = 0; y <= viewChunk.width(); y++) {
+			for (int x = 0; x <= viewChunk.length(); x++) {
 				Point currentPoint = new Point(x, y);
-				terminal.write(viewChunk.unitAt(currentPoint).symbol(), currentPoint.x, currentPoint.y);
+				try {
+					terminal.write(viewChunk.unitAt(new Point3D(currentPoint.getX(), currentPoint.getY(), 0)).symbol(), x, y);
+				}
+				catch (NullPointerException e) {
+					terminal.write(' ', x, y);
+				}
 			}
 		}
 		for (AbstractMoveable f : EntityContainer.getAllVisibleEntity()) {
@@ -130,7 +136,7 @@ public class Display {
 					if (absPos.equals(f.getAbsPosition())) {
 						terminal.write(f.getSymbol(), (int)absPos.getX(), (int)absPos.getY());
 					} else {
-						terminal.write(thisPos.findTile().symbol(), (int)absPos.getX(), (int)absPos.getY());
+						terminal.write(RelativePos.generalWorld().relativeFindTile(thisPos).symbol(), (int)absPos.getX(), (int)absPos.getY());
 					}
 				}
 			}

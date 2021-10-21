@@ -18,4 +18,9 @@ public class Player extends AbstractMoveable {
 		super(initPos, true, '@', false);
 		sightRad = 7;
 	}
+	
+	public Player(RelativePos initPos) {
+		super(initPos, true, '@', false);
+		sightRad = 7;
+	}
 }

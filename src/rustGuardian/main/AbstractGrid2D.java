@@ -15,7 +15,12 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 	private static final long serialVersionUID = 1060623638149583738L;
 	private int length; // Xaxis
 	private int width; // Yaxis
-
+	
+	public AbstractGrid2D(Point dims) {
+		length = dims.x;
+		width = dims.y;
+	}
+	
 	@Override
 	public int length() {
 		return length;
@@ -53,7 +58,7 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 		try {
 			return get(loc.y).get(loc.x);
 		} catch (IndexOutOfBoundsException e) {
-			System.out.println("Out of bounds of 2D Grid:" + loc);
+			//System.out.println("Out of bounds of 2D Grid:" + loc);
 			return null;
 		}
 	}
@@ -95,10 +100,5 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 		} catch (IndexOutOfBoundsException i) {
 			System.out.println("Cannot place " + unit + " at " + loc);
 		}
-	}
-
-	public AbstractGrid2D(Point dims) {
-		length = dims.x;
-		width = dims.y;
 	}
 }
