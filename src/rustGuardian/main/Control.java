@@ -9,8 +9,8 @@ public class Control {
 	private static HashMap<Integer, String> currentScheme;
 
 	public Control() {
-		Integer[] keyCodes = { KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_LESS,
-				KeyEvent.VK_GREATER, KeyEvent.VK_L, KeyEvent.VK_ESCAPE }; // All potential keystroke mappings
+		Integer[] keyCodes = { KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_COMMA,
+				KeyEvent.VK_PERIOD, KeyEvent.VK_L, KeyEvent.VK_ESCAPE }; // All potential keystroke mappings
 		// go here
 		String[] lookActionCodes = { "north", "south", "west", "east", "up", "down", "", "standard_mode" };
 		String[] standardActionCodes = { "north", "south", "west", "east", "up", "down", "look_mode", "" };
@@ -38,38 +38,45 @@ public class Control {
 	}
 
 	public static void handleInput(KeyEvent e) {
+		String press = currentScheme.get(e.getKeyCode());
 		if (e.getID() == KeyEvent.KEY_PRESSED && currentScheme.containsKey(e.getKeyCode())) {
-			switch (currentScheme.get(e.getKeyCode())) {
-			case "north":
-				EntityContainer.activeEntity().move(Direction.NORTH);
-				break;
-			case "south":
-				EntityContainer.activeEntity().move(Direction.SOUTH);
-				break;
-			case "west":
-				EntityContainer.activeEntity().move(Direction.WEST);
-				break;
-			case "east":
-				EntityContainer.activeEntity().move(Direction.EAST);
-				break;
-			case "up":
-				EntityContainer.activeEntity().move(Direction.UP);
-				break;
-			case "down":
-				EntityContainer.activeEntity().move(Direction.DOWN);
-				break;
-			case "look_mode":
-				switchScheme(lookScheme);
-				EntityContainer.getDefaultCursorEntity().setVisible(true);
-				EntityContainer.cursorActivate();
-				ApplicationMain.refresh();
-				break;
-			case "standard_mode":
-				switchScheme(standardScheme);
-				EntityContainer.getDefaultCursorEntity().setVisible(false);
-				EntityContainer.playerActivate();
-				ApplicationMain.refresh();
-				break;
+			if (e.isShiftDown()) {
+				switch (press) {
+					case "up":
+						EntityContainer.activeEntity().move(Direction.UP);
+						break;
+					case "down":
+						EntityContainer.activeEntity().move(Direction.DOWN);
+						break;
+				}
+			}
+			else {
+				switch (press) {
+				case "north":
+					EntityContainer.activeEntity().move(Direction.NORTH);
+					break;
+				case "south":
+					EntityContainer.activeEntity().move(Direction.SOUTH);
+					break;
+				case "west":
+					EntityContainer.activeEntity().move(Direction.WEST);
+					break;
+				case "east":
+					EntityContainer.activeEntity().move(Direction.EAST);
+					break;
+				case "look_mode":
+					switchScheme(lookScheme);
+					EntityContainer.getDefaultCursorEntity().setVisible(true);
+					EntityContainer.cursorActivate();
+					ApplicationMain.refresh();
+					break;
+				case "standard_mode":
+					switchScheme(standardScheme);
+					EntityContainer.getDefaultCursorEntity().setVisible(false);
+					EntityContainer.playerActivate();
+					ApplicationMain.refresh();
+					break;
+				}
 			}
 		}
 	}

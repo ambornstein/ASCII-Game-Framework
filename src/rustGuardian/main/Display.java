@@ -72,14 +72,14 @@ public class Display {
 	 * @param focusObject
 	 * @return
 	 */
-	private static boolean inViewLimit(int xProximity, int yProximity, IMoveable focusObject) {
+	private static boolean inViewLimit(IMoveable focusObject) {
 		if (frameOrigin == null || frameDestination == null) {
 			return true;
 		}
-		if (focusObject.getAbsPosition().getX() - frameOrigin.getX() <= xProximity
-				|| focusObject.getAbsPosition().getY() - frameOrigin.getY() <= yProximity
-				|| frameOrigin.getX() - focusObject.getAbsPosition().getX() <= xProximity
-				|| frameDestination.getY() - focusObject.getAbsPosition().getY() < yProximity) {
+		if (focusObject.getAbsPosition().getX() >= frameOrigin.getX()
+				&& focusObject.getAbsPosition().getY() >= frameOrigin.getY()
+				&& focusObject.getAbsPosition().getX() <= frameDestination.getX()
+				&& focusObject.getAbsPosition().getY() <= frameDestination.getY()) {
 			return true;
 		}
 		return false;
@@ -87,14 +87,11 @@ public class Display {
 
 	public static void playerPerspectiveDisplay() {
 		IMoveable focusObject = EntityContainer.activeEntity();
-		if (inViewLimit(viewMargin.x, viewMargin.y, focusObject)) {
-			frameOrigin = new Point3D(focusObject.getAbsPosition().getX() - viewMargin.x,
-					focusObject.getAbsPosition().getY() - viewMargin.y, focusObject.getAbsPosition().getZ());
-			frameOrigin = RelativePos.correctOutOfBounds(frameOrigin);
-			frameDestination = new Point3D(viewMargin.x + viewMargin.x * 2, viewMargin.y + viewMargin.y * 2, frameOrigin.getZ());
-		}
+		frameOrigin = new Point3D(focusObject.getAbsPosition().getX() - viewMargin.x,
+				focusObject.getAbsPosition().getY() - viewMargin.y, focusObject.getAbsPosition().getZ());
+		frameOrigin = RelativePos.correctOutOfBounds(frameOrigin);
+		frameDestination = new Point3D((viewMargin.x*2)+1, (viewMargin.y*2)+1, frameOrigin.getZ());
 		MapChunk viewChunk = world.subsection(frameOrigin, frameDestination);
-		System.out.println(viewChunk.size());
 		for (int y = 0; y <= viewChunk.width(); y++) {
 			for (int x = 0; x <= viewChunk.length(); x++) {
 				Point currentPoint = new Point(x, y);
@@ -107,13 +104,15 @@ public class Display {
 			}
 		}
 		for (AbstractMoveable f : EntityContainer.getAllVisibleEntity()) {
-			Point3D focusInScope = new Point3D((int)(f.getAbsPosition().getX() - frameOrigin.getX()),
-					(int)(f.getAbsPosition().getY() - frameOrigin.getY()), (int)(f.getAbsPosition().getZ() - frameOrigin.getZ()));
-			//System.out.println(f + "Focus In Scope:" + focusInScope);
-			if (focusInScope.getX() <= viewChunk.length() && focusInScope.getY() <= viewChunk.width() && focusInScope.getZ() == 0) {
-				terminal.write(f.getSymbol(), (int)focusInScope.getX(), (int)focusInScope.getY());
+			if (inViewLimit(f)) {
+				Point3D focusInScope = f.getAbsPosition().subtract(frameOrigin);
+				//System.out.println(f + "Focus In Scope:" + focusInScope);
+				if (focusInScope.getX() <= viewChunk.length() && focusInScope.getY() <= viewChunk.width() && focusInScope.getZ() == 0) {
+					terminal.write(f.getSymbol(), (int)focusInScope.getX(), (int)focusInScope.getY());
+				}
 			}
 		}
+		terminal.write(String.valueOf(frameOrigin.getZ()), 0, 0);
 	}
 
 	/**

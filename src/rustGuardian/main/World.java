@@ -41,8 +41,8 @@ public class World extends AbstractGrid2D<MapChunk> {
 	}
 	
 	public Tile relativeFindTile(RelativePos loc) {
-		Point chunkLoc = new Point(loc.chunkPoint().x - 1, loc.chunkPoint().y - 1);
-		Point3D tileLoc = new Point3D(loc.tilePoint().getX() - 1, loc.tilePoint().getY() - 1, loc.tilePoint().getZ());
+		Point chunkLoc = Util.decrement(loc.chunkPoint());
+		Point3D tileLoc = Util.decrement(loc.tilePoint());
 		try {
 			return unitAt(chunkLoc).unitAt(tileLoc);
 		}
