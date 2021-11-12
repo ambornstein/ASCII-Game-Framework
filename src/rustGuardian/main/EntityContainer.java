@@ -5,51 +5,42 @@ import java.util.HashSet;
 import javafx.geometry.Point3D;
 
 public class EntityContainer {
-	public static HashSet<AbstractMoveable> entityDir; // All entities go here; Define and subdivide 'entity' to be more
+	private HashSet<AbstractMoveable> entityDir; // All entities go here; Define and subdivide 'entity' to be more
 														// specific
-	public static AbstractMoveable activeEntity; // The active entity that will be controllable
-	public static World world;
+	private AbstractMoveable activeEntity; // The active entity that will be controllable
 	
-	public EntityContainer(World world) {
+	public EntityContainer() {
 		entityDir = new HashSet<AbstractMoveable>();
 		Player player = new Player(new RelativePos(1, 1, 3, 3, 3));
 		addEntity(player);
 		addEntity(new Cursor(player.getRelPosition()));
 	}
 
-	public static void setWorld(World worldToSet) {
-		world = worldToSet;
-	}
-
-	public static World getWorld() {
-		return world;
-	}
-	
-	public static void addEntity(AbstractMoveable entity) {
+	public void addEntity(AbstractMoveable entity) {
 		if (entityDir.isEmpty()) {
-			activeEntity = entity;
+			setActiveEntity(entity);
 		}
 		entityDir.add(entity);
 	}
 
-	public static void setActiveEntity(AbstractMoveable newEntity) {
+	public void setActiveEntity(AbstractMoveable newEntity) {
 		activeEntity = newEntity;
 	}
 	
-	public static void playerActivate() {
+	public void playerActivate() {
 		setActiveEntity(getDefaultPlayerEntity());
 	}
 
-	public static IMoveable activeEntity() {
+	public IMoveable activeEntity() {
 		return activeEntity;
 	}
 
-	public static void cursorActivate() {
+	public void cursorActivate() {
 		setActiveEntity(getDefaultCursorEntity());
 		activeEntity.setPos(getDefaultPlayerEntity().getAbsPosition());
 	}
 
-	public static AbstractMoveable getDefaultPlayerEntity() { // The system is bullshit and must be changed quick
+	public AbstractMoveable getDefaultPlayerEntity() { // The system is bullshit and must be changed quick
 		for (AbstractMoveable m : entityDir) {
 			if (m.getClass() == Player.class) {
 				return m;
@@ -58,7 +49,7 @@ public class EntityContainer {
 		return null;
 	}
 
-	public static AbstractMoveable getDefaultCursorEntity() {
+	public AbstractMoveable getDefaultCursorEntity() {
 		for (AbstractMoveable m : entityDir) {
 			if (m.getClass() == Cursor.class) {
 				return m;
@@ -67,7 +58,7 @@ public class EntityContainer {
 		return null;
 	}
 
-	public static ArrayList<AbstractMoveable> getAllVisibleEntity() {
+	public ArrayList<AbstractMoveable> getAllVisibleEntity() {
 		ArrayList<AbstractMoveable> visibleList = new ArrayList<AbstractMoveable>();
 		for (AbstractMoveable m : entityDir) {
 			if (m.getVisible()) {

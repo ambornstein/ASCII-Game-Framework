@@ -17,9 +17,7 @@ import asciiPanel.AsciiPanel;
 public class ApplicationMain extends JFrame implements KeyListener {
 	private static final long serialVersionUID = 1060623638149583738L;
 	public static AsciiPanel terminal;
-	public static Player player;
-	public static World world;
-	public static IMoveable activeObject;
+	public World world;
 
 	public ApplicationMain() {
 		super();
@@ -27,9 +25,9 @@ public class ApplicationMain extends JFrame implements KeyListener {
 		terminal.setFocusable(true);
 		terminal.addKeyListener(this);
 		add(terminal);
-		RelativePos.makeWorld();
+		world = new World(new Generator(new RelativePos(2,2,40,25,5)));
 		new Control();
-		new Display(terminal);
+		new Display(terminal, world);
 		this.setTitle("Rust Guardian");
 		pack();
 		refresh();

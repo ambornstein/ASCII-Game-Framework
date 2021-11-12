@@ -11,9 +11,9 @@ public class Display {
 	private static Point3D frameDestination;
 	private static Point viewMargin;
 
-	public Display(AsciiPanel terminal) {
-		Display.world = RelativePos.generalWorld();
-		Display.terminal = terminal;
+	public Display(AsciiPanel terminal, World world) {
+		this.world = world;
+		this.terminal = terminal;
 		viewMargin = new Point(39,24);//(int)RelativePos.generator().tilePoint().getX(), (int)RelativePos.generator().tilePoint().getY()
 	}
 
@@ -24,8 +24,8 @@ public class Display {
 	public static void fullDisplay() { // world parameter is irrelevant because a World instance is created in
 										// ApplicationMain
 		// Loops through each chunk and uses display to display it on it's map portion
-		for (int y = 0; y < RelativePos.generator().chunkPoint().y; y++) {
-			for (int x = 0; x < RelativePos.generator().chunkPoint().x; x++) {
+		for (int y = 0; y < RelativePos.generator().getBounds().chunkPoint().y; y++) {
+			for (int x = 0; x < RelativePos.generator().getBounds().chunkPoint().x; x++) {
 				display(new RelativePos(x, y, 0, 0, 0)); // display is supplied with the chunk coordinates only
 															// any input of tile coordinates is ignored
 			}
@@ -131,11 +131,11 @@ public class Display {
 				// System.out.println(thisPos.toString());
 				Point3D absPos = thisPos.toAbs();
 				// System.out.println(absPos);
-				for (AbstractMoveable f : EntityContainer.getAllVisibleEntity()) {
+				for (AbstractMoveable f : world.getBeings().getAllVisibleEntity()) {
 					if (absPos.equals(f.getAbsPosition())) {
 						terminal.write(f.getSymbol(), (int)absPos.getX(), (int)absPos.getY());
 					} else {
-						terminal.write(RelativePos.generalWorld().relativeFindTile(thisPos).symbol(), (int)absPos.getX(), (int)absPos.getY());
+						terminal.write(world.relativeFindTile(thisPos).symbol(), (int)absPos.getX(), (int)absPos.getY());
 					}
 				}
 			}
