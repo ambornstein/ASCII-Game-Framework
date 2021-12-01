@@ -7,8 +7,10 @@ public class Control {
 	private static HashMap<Integer, String> lookScheme; // control scheme when in look mode
 	private static HashMap<Integer, String> standardScheme; // control scheme default
 	private static HashMap<Integer, String> currentScheme;
+	private static EntityContainer beings;
 
-	public Control() {
+	public Control(EntityContainer beings) {
+		Control.beings = beings;
 		Integer[] keyCodes = { KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_COMMA,
 				KeyEvent.VK_PERIOD, KeyEvent.VK_L, KeyEvent.VK_ESCAPE }; // All potential keystroke mappings
 		// go here
@@ -43,38 +45,36 @@ public class Control {
 			if (e.isShiftDown()) {
 				switch (press) {
 					case "up":
-						EntityContainer.activeEntity().move(Direction.UP);
+						beings.move(Direction.UP);
 						break;
 					case "down":
-						EntityContainer.activeEntity().move(Direction.DOWN);
+						beings.move(Direction.DOWN);
 						break;
 				}
 			}
 			else {
 				switch (press) {
 				case "north":
-					EntityContainer.activeEntity().move(Direction.NORTH);
+					beings.move(Direction.NORTH);
 					break;
 				case "south":
-					EntityContainer.activeEntity().move(Direction.SOUTH);
+					beings.move(Direction.SOUTH);
 					break;
 				case "west":
-					EntityContainer.activeEntity().move(Direction.WEST);
+					beings.move(Direction.WEST);
 					break;
 				case "east":
-					EntityContainer.activeEntity().move(Direction.EAST);
+					beings.move(Direction.EAST);
 					break;
 				case "look_mode":
 					switchScheme(lookScheme);
-					EntityContainer.getDefaultCursorEntity().setVisible(true);
-					EntityContainer.cursorActivate();
-					ApplicationMain.refresh();
+					beings.activateCursor();
+					beings.activeCursor().setVisible(true);
 					break;
 				case "standard_mode":
 					switchScheme(standardScheme);
-					EntityContainer.getDefaultCursorEntity().setVisible(false);
-					EntityContainer.playerActivate();
-					ApplicationMain.refresh();
+					beings.activatePlayer();
+					beings.activeCursor().setVisible(false);
 					break;
 				}
 			}

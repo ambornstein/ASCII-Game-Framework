@@ -36,20 +36,4 @@ public class PointSet extends HashSet<Point3D> {
 			}
 		}
 	}
-
-	// Should be rewritten to generalize later, once it becomes evident what other
-	// grids should be copied
-	public MapChunk copyGrid(Point3D startPoint, Point3D endPoint) {
-		construct(startPoint, endPoint);
-		Point3D deltaPoint = new Point3D(endPoint.getX() - startPoint.getX(), endPoint.getY() - startPoint.getY(),
-				endPoint.getZ() - startPoint.getZ());
-		if (this.isEmpty()) {
-			return new MapChunk(0, 0, 0);
-		}
-		MapChunk returnChunk = new MapChunk(deltaPoint);
-		forEach((Point3D p) -> returnChunk.place(
-				new Point3D(p.getX() - startPoint.getX(), p.getY() - startPoint.getY(), p.getZ() - startPoint.getZ()),
-				RelativePos.generalWorld().absoluteFindTile(p)));
-		return returnChunk;
-	}
 }

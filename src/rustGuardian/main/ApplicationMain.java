@@ -17,6 +17,7 @@ import asciiPanel.AsciiPanel;
 public class ApplicationMain extends JFrame implements KeyListener {
 	private static final long serialVersionUID = 1060623638149583738L;
 	public static AsciiPanel terminal;
+	public EntityContainer beings;
 	public World world;
 
 	public ApplicationMain() {
@@ -26,8 +27,9 @@ public class ApplicationMain extends JFrame implements KeyListener {
 		terminal.addKeyListener(this);
 		add(terminal);
 		world = new World(new Generator(new RelativePos(2,2,40,25,5)));
-		new Control();
-		new Display(terminal, world);
+		beings = new EntityContainer(world);
+		new Control(beings);
+		new Display(terminal, world, beings);
 		this.setTitle("Rust Guardian");
 		pack();
 		refresh();
@@ -36,6 +38,7 @@ public class ApplicationMain extends JFrame implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		Control.handleInput(e);
+		refresh();
 	}
 
 	@Override

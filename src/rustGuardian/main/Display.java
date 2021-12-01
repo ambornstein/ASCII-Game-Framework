@@ -7,13 +7,15 @@ import javafx.geometry.Point3D;
 public class Display {
 	private static World world;
 	private static AsciiPanel terminal;
+	private static EntityContainer beings;
 	private static Point3D frameOrigin;
 	private static Point3D frameDestination;
 	private static Point viewMargin;
 
-	public Display(AsciiPanel terminal, World world) {
-		this.world = world;
-		this.terminal = terminal;
+	public Display(AsciiPanel terminal, World world, EntityContainer beings) {
+		Display.world = world;
+		Display.terminal = terminal;
+		Display.beings = beings;
 		viewMargin = new Point(39,24);//(int)RelativePos.generator().tilePoint().getX(), (int)RelativePos.generator().tilePoint().getY()
 	}
 
@@ -24,8 +26,8 @@ public class Display {
 	public static void fullDisplay() { // world parameter is irrelevant because a World instance is created in
 										// ApplicationMain
 		// Loops through each chunk and uses display to display it on it's map portion
-		for (int y = 0; y < RelativePos.generator().getBounds().chunkPoint().y; y++) {
-			for (int x = 0; x < RelativePos.generator().getBounds().chunkPoint().x; x++) {
+		for (int y = 0; y < world.getGenerator().chunkPoint().y; y++) {
+			for (int x = 0; x < world.getGenerator().chunkPoint().x; x++) {
 				display(new RelativePos(x, y, 0, 0, 0)); // display is supplied with the chunk coordinates only
 															// any input of tile coordinates is ignored
 			}
@@ -86,7 +88,7 @@ public class Display {
 	}
 
 	public static void playerPerspectiveDisplay() {
-		IMoveable focusObject = EntityContainer.activeEntity();
+		AbstractMoveable focusObject = beings.activeUnit();
 		frameOrigin = new Point3D(focusObject.getAbsPosition().getX() - viewMargin.x,
 				focusObject.getAbsPosition().getY() - viewMargin.y, focusObject.getAbsPosition().getZ());
 		frameOrigin = RelativePos.correctOutOfBounds(frameOrigin);
@@ -103,7 +105,7 @@ public class Display {
 				}
 			}
 		}
-		for (AbstractMoveable f : EntityContainer.getAllVisibleEntity()) {
+		for (AbstractMoveable f : beings.getAllVisibleEntity()) {
 			if (inViewLimit(f)) {
 				Point3D focusInScope = f.getAbsPosition().subtract(frameOrigin);
 				//System.out.println(f + "Focus In Scope:" + focusInScope);
@@ -125,13 +127,13 @@ public class Display {
 	 *            GameMap that is of tiles for active gameplay display
 	 */
 	private static void display(RelativePos fullPos) {
-		for (int i = 0; i < RelativePos.generator().chunkPoint().y; i++) {
-			for (int j = 0; j < RelativePos.generator().chunkPoint().x; j++) {
+		for (int i = 0; i < world.getGenerator().chunkPoint().y; i++) {
+			for (int j = 0; j < world.getGenerator().chunkPoint().x; j++) {
 				RelativePos thisPos = fullPos.readOnlyShift(j, i, 0);
 				// System.out.println(thisPos.toString());
 				Point3D absPos = thisPos.toAbs();
 				// System.out.println(absPos);
-				for (AbstractMoveable f : world.getBeings().getAllVisibleEntity()) {
+				for (AbstractMoveable f : beings.getAllVisibleEntity()) {
 					if (absPos.equals(f.getAbsPosition())) {
 						terminal.write(f.getSymbol(), (int)absPos.getX(), (int)absPos.getY());
 					} else {

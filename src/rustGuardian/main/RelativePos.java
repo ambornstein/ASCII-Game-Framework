@@ -87,8 +87,8 @@ public class RelativePos {
 
 	public static Point3D correctOutOfBounds(Point3D pos) {
 		Point3D copyPos = new Point3D((int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
-		Point3D generatorAbs = generator.getBounds().toAbs(); // shortname to store world bounds
-		if (generator().getBounds().compare(toRel(pos)) == 1) { // Correcting for greater than bounds positions
+		Point3D generatorAbs = generator.toAbs(); // shortname to store world bounds
+		if (generator.compare(toRel(pos)) == 1) { // Correcting for greater than bounds positions
 			// System.out.println("Out of Bounds");
 			Point3D maxModPos = new Point3D(pos.getX()%generatorAbs.getX(), pos.getY()%generatorAbs.getY(), pos.getZ()%generatorAbs.getZ());
 			//remainder from the point being divided by the map's absolute dimensions
@@ -98,7 +98,7 @@ public class RelativePos {
 			//and make sure to correct any multiples of absoluteDims that mod missed
 			double correctZ = maxModPos.getZ() == copyPos.getZ() ? copyPos.getZ():(copyPos.getZ() - maxModPos.getZ()) / ((copyPos.getZ() - maxModPos.getZ()) / generatorAbs.getZ());
 			copyPos = new Point3D(correctX, correctY, correctZ);
-		} else if (generator().getBounds().compare(toRel(pos)) == -2) { // Correcting for less than bounds positions (-1,-1)
+		} else if (generator.compare(toRel(pos)) == -2) { // Correcting for less than bounds positions (-1,-1)
 			//System.out.println("Less than Bounds");
 			Point3D absValPos = new Point3D(Math.abs(pos.getX()), Math.abs(pos.getY()), Math.abs(pos.getZ())); 
 			//Adding the absolute val of a negative integer to itself if it is negative makes the result 0
@@ -140,11 +140,11 @@ public class RelativePos {
 	 */
 	public static RelativePos toRel(Point3D absPoint) {
 		Point chunkLoc = new Point(
-				(int) Math.floor((absPoint.getX()) / generator.getBounds().tilePoint.getX())+1, // Finds out what chunk the absPoint falls in
-				(int) Math.floor((absPoint.getY()) / generator.getBounds().tilePoint.getY())+1); // Can't use ceiling because the ceiling of 0 is 0
+				(int) Math.floor((absPoint.getX()) / generator.tilePoint().getX())+1, // Finds out what chunk the absPoint falls in
+				(int) Math.floor((absPoint.getY()) / generator.tilePoint().getY())+1); // Can't use ceiling because the ceiling of 0 is 0
 		Point3D tileLoc = new Point3D(
-				((absPoint.getX() + 1) - ((generator.getBounds().tilePoint.getX() - 1) * (chunkLoc.x-1))), 
-				((absPoint.getY() + 1) - ((generator.getBounds().tilePoint.getY() - 1) * (chunkLoc.y-1))), absPoint.getZ()+1);
+				((absPoint.getX() + 1) - ((generator.tilePoint().getX() - 1) * (chunkLoc.x-1))), 
+				((absPoint.getY() + 1) - ((generator.tilePoint().getY() - 1) * (chunkLoc.y-1))), absPoint.getZ()+1);
 		// Cuts off the amount of tiles that are outside this chunk
 		return new RelativePos(chunkLoc, tileLoc);
 	}
@@ -156,8 +156,8 @@ public class RelativePos {
 	 *         the World, irrespective of chunk
 	 */
 	public Point3D toAbs() {
-		Point chunkShift = new Point((int) ((chunkPoint.x - 1) * generator.getBounds().tilePoint.getX()),
-				(int) ((chunkPoint.y - 1) * generator.getBounds().tilePoint.getY()));
+		Point chunkShift = new Point((int) ((chunkPoint.x - 1) * generator.tilePoint().getX()),
+				(int) ((chunkPoint.y - 1) * generator.tilePoint().getY()));
 		Point3D absReturn = new Point3D(tilePoint.getX() - 1 + chunkShift.x, tilePoint.getY() - 1 + chunkShift.y,
 				tilePoint.getZ() - 1); // .add for Point3D is just broken
 		return absReturn;

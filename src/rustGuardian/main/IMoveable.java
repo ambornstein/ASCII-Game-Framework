@@ -3,7 +3,6 @@ package rustGuardian.main;
 import javafx.geometry.Point3D;
 
 public interface IMoveable {
-	public void move(Direction d);
 
 	public void setVisible(boolean vis);
 

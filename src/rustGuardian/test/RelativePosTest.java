@@ -7,7 +7,9 @@ import java.awt.Point;
 import org.junit.jupiter.api.Test;
 
 import javafx.geometry.Point3D;
+import rustGuardian.main.Generator;
 import rustGuardian.main.RelativePos;
+import rustGuardian.main.World;
 
 class RelativePosTest {
 
@@ -18,7 +20,7 @@ class RelativePosTest {
 					// 0 = otherPos and onePos are equivalent
 					// 1 = otherPos is greater than onePos
 		RelativePos gen = new RelativePos(new Point(2, 2), new Point3D(40, 25, 5));
-		RelativePos.makeWorld(gen);
+		World world = new World(new Generator(gen));
 		RelativePos outOfBounds = new RelativePos(new Point(1, 1), new Point3D(0, 37, 2));
 		RelativePos inBounds = new RelativePos(new Point(1, 1), new Point3D(24, 0, 2));
 		RelativePos negative1 = new RelativePos(new Point(1, 1), new Point3D(-2, -2, -2));

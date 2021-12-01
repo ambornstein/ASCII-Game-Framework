@@ -6,12 +6,17 @@ import javafx.geometry.Point3D;
 
 public class World extends AbstractGrid2D<MapChunk> {
 	private static final long serialVersionUID = 1060623638149583738L;
-	private static EntityContainer beings;
+	private Generator gen;
 	
 	public World(Generator gen) {
-		super(gen.getBounds().chunkPoint());
+		super(gen.chunkPoint());
+		this.gen = gen;
 		RelativePos.setGenerator(gen);
 		create();
+	}
+	
+	public Generator getGenerator() {
+		return gen;
 	}
 	
 	@Override
@@ -19,7 +24,7 @@ public class World extends AbstractGrid2D<MapChunk> {
 		for (int y = 0; y <= super.width(); y++) {
 			add(new ArrayList<MapChunk>());
 			for (int x = 0; x <= super.length(); x++) {
-				get(y).add(new MapChunk(RelativePos.generator().getBounds().tilePoint())); // Each placement needs to be a new
+				get(y).add(new MapChunk(gen.tilePoint())); // Each placement needs to be a new
 																				// MapChunk
 			}
 		}
@@ -59,7 +64,6 @@ public class World extends AbstractGrid2D<MapChunk> {
 		// fill() must be called here and not in Abst
 		fill();
 		flagBorders();
-		beings = new EntityContainer();
 	}
 
 	public MapChunk subsection(Point3D startCorner, Point3D endCorner) { //copies all of the tiles from the startCorner to the endCorner
@@ -85,7 +89,7 @@ public class World extends AbstractGrid2D<MapChunk> {
 
 	private void flagBorders() {
 		PointSet borderSet;
-		Point3D dims = RelativePos.generator().getBounds().toAbs();
+		Point3D dims = gen.toAbs();
 		for (Direction dir : Direction.AXIS) {// Loop through NORTH, SOUTH, EAST, WEST, UP, DOWN
 			Point3D originCorner = new Point3D(dims.getX() * dir.offSet().getX(), dims.getY() * dir.offSet().getY(),
 					dims.getZ() * dir.offSet().getZ());
@@ -98,5 +102,19 @@ public class World extends AbstractGrid2D<MapChunk> {
 				absolutePlace(point, Tile.WALL);
 			});
 		}
+	}
+	
+	// Should be rewritten to generalize later, once it becomes evident what other
+	// grids should be copied
+	public MapChunk copyGrid(Point3D startPoint, Point3D endPoint) {
+		PointSet set = new PointSet(startPoint, endPoint);
+		Point3D deltaPoint = new Point3D(endPoint.getX() - startPoint.getX(), endPoint.getY() - startPoint.getY(),
+				endPoint.getZ() - startPoint.getZ());
+		if (this.isEmpty()) {
+			return new MapChunk(0, 0, 0);
+		}
+		MapChunk returnChunk = new MapChunk(deltaPoint);
+		set.forEach((Point3D p) -> returnChunk.place( new Point3D(p.getX() - startPoint.getX(), p.getY() - startPoint.getY(), p.getZ() - startPoint.getZ()), absoluteFindTile(p)));
+		return returnChunk;
 	}
 }

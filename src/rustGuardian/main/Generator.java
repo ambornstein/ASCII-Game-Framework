@@ -1,17 +1,11 @@
 package rustGuardian.main;
 
-public class Generator {
-	private RelativePos bounds;
-	
+public class Generator extends RelativePos {
 	Generator() {
-		bounds = new RelativePos(2, 2, 40, 25, 5);
+		super(2, 2, 40, 25, 5);
 	}
 	
-	Generator(RelativePos bounds) {
-		this.bounds = bounds;
-	}
-	
-	public RelativePos getBounds() {
-		return bounds;
+	public Generator(RelativePos bounds) {
+		super(bounds.chunkPoint(), bounds.tilePoint());
 	}
 }
