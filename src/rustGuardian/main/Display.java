@@ -18,6 +18,10 @@ public class Display {
 		Display.beings = beings;
 		viewMargin = new Point(39,24);//(int)RelativePos.generator().tilePoint().getX(), (int)RelativePos.generator().tilePoint().getY()
 	}
+	
+	public static Point3D getFrameOrigin() {
+		return frameOrigin;
+	}
 
 	/**
 	 * Wrapper which loops and calls display() over all the chunks that exist in the

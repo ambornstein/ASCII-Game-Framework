@@ -4,8 +4,7 @@ import java.util.HashSet;
 import javafx.geometry.Point3D;
 
 /**
- * A class that collects Point3Ds and calls methods on the corresponding tile
- * positions in the world.
+ * A class that collects Point3Ds. Since it is a collection of points, this class does not store information about the structures located at these locations.
  * 
  * @author ambor
  */
@@ -16,6 +15,11 @@ public class PointSet extends HashSet<Point3D> {
 		construct(startCorner, endCorner);
 	}
 
+	/**Creates a rectangular set of points from an initial and final point.
+	 * 
+	 * @param startCorner Point3D of the lower bound corner
+	 * @param endCorner Point3D of the upper bound corner
+	 */
 	public void construct(Point3D startCorner, Point3D endCorner) { // copies all of the tiles from the startCorner to
 																	// the endCorner to this PointSet
 		startCorner = RelativePos.correctOutOfBounds(startCorner); // Correct positions that are out of the bounds of

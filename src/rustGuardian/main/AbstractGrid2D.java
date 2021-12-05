@@ -4,12 +4,11 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 /**
- * Abstract for the purposes of creating 2D grids of any object type. Supports
- * read and write.
+ * Abstract for the purposes of creating 2D grids.
  * 
  * @author ambor
  *
- * @param <E>
+ * @param <E> Class of structure that composes the grid
  */
 public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implements GridInterface<E> {
 	private static final long serialVersionUID = 1060623638149583738L;
@@ -21,16 +20,25 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 		width = dims.y;
 	}
 	
+	/**Horizontal (X) dimension of this grid
+	 * 
+	 */
 	@Override
 	public int length() {
 		return length;
 	}
-
+	
+	/**Lateral (Y) dimension of this grid
+	 * 
+	 */
 	@Override
 	public int width() {
 		return width;
 	}
 
+	/**Vertical (Z) dimension of this grid (Always 0 for 2d grid)
+	 * 
+	 */
 	@Override
 	public int height() {
 		return 0;
@@ -86,7 +94,7 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 	}
 
 	/**
-	 * Replaces or places a unit on a specified location.
+	 * Places or replaces a unit on a specified location.
 	 * 
 	 * @param loc
 	 *            Point to place the unit at

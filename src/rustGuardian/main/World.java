@@ -4,6 +4,11 @@ import java.awt.Point;
 import java.util.ArrayList;
 import javafx.geometry.Point3D;
 
+/**A region composed of many chunks
+ * 
+ * @author ambor
+ *
+ */
 public class World extends AbstractGrid2D<MapChunk> {
 	private static final long serialVersionUID = 1060623638149583738L;
 	private Generator gen;

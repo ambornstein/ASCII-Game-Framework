@@ -1,7 +1,12 @@
 package rustGuardian.main;
 
 import java.util.HashMap;
+
+import javafx.geometry.Point3D;
+
+import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 public class Control {
 	private static HashMap<Integer, String> lookScheme; // control scheme when in look mode
@@ -79,5 +84,22 @@ public class Control {
 				}
 			}
 		}
+	}
+	
+	public static Point3D handleMouse(MouseEvent e, Point termLoc, int originX, int originY, int originZ) {
+		return handleMouse(e, termLoc, new Point3D(originX, originY, originZ));
+	}
+	
+	public static Point3D handleMouse(MouseEvent e, int x, int y, Point3D origin) {
+		return handleMouse(e, new Point(x,y), origin);
+	}
+	
+	public static Point3D handleMouse(MouseEvent e, int x, int y, int originX, int originY, int originZ) {
+		return handleMouse(e, new Point(x,y), new Point3D(originX, originY, originZ));
+	}
+	
+	public static Point3D handleMouse(MouseEvent e, Point termLoc, Point3D origin) {
+		Point3D mouseLoc = new Point3D(Math.floor(e.getX()/termLoc.getX()), Math.floor(e.getY()/termLoc.getY()), 0);
+		return new Point3D(origin.getX()+mouseLoc.getX(), origin.getY()+mouseLoc.getY(), origin.getZ());
 	}
 }
