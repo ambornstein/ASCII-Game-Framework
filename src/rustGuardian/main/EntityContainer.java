@@ -65,12 +65,12 @@ public class EntityContainer {
 	}
 	
 	public void move(Direction d) {
-		RelativePos rel = RelativePos.toRel(unit.absPosition.add(d.offSet())); // Convert to relative in order to access the
+		RelativePos rel = RelativePos.toRel(unit.absPosition.add(d.offset())); // Convert to relative in order to access the
 																			// methods required for the next if
 																			// statement
 		if ((unit.passBarriers || world.relativeFindTile(rel).passable()) && world.getGenerator().compare(rel) == -1) { 
 			// if object is constrained by boundaries, test the passability of the tile to move to, and if it is in bounds
-			unit.setPos(unit.absPosition.add(d.offSet())); // the test is passed, allowing the real position to be changed
+			unit.setPos(unit.absPosition.add(d.offset())); // the test is passed, allowing the real position to be changed
 			ApplicationMain.refresh();
 		}
 	}

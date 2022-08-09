@@ -7,6 +7,7 @@ public abstract class AbstractMoveable implements IMoveable {
 	protected char symbol;
 	protected boolean passBarriers;
 	protected Point3D absPosition;
+	protected int sightRad;
 	
 	public AbstractMoveable(RelativePos relPoint) {
 		setPos(relPoint);
@@ -22,18 +23,20 @@ public abstract class AbstractMoveable implements IMoveable {
 		passBarriers = true;
 	}
 	
-	public AbstractMoveable(RelativePos relPoint, boolean visible, char symbol, boolean passBarriers) {
+	public AbstractMoveable(RelativePos relPoint, boolean visible, char symbol, boolean passBarriers, int sightRad) {
 		setPos(relPoint);
 		this.visible = visible;
 		this.symbol = symbol;
 		this.passBarriers = passBarriers;
+		this.sightRad = sightRad;
 	}
 
-	public AbstractMoveable(Point3D startPoint, boolean visible, char symbol, boolean passBarriers) {
+	public AbstractMoveable(Point3D startPoint, boolean visible, char symbol, boolean passBarriers, int sightRad) {
 		setPos(startPoint);
 		this.visible = visible;
 		this.symbol = symbol;
 		this.passBarriers = passBarriers;
+		this.sightRad = sightRad;
 	}
 	
 	@Override
@@ -70,4 +73,8 @@ public abstract class AbstractMoveable implements IMoveable {
 		visible = newVis;
 	}
 	
+	@Override
+	public int sightRad() {
+		return sightRad;
+	}
 }

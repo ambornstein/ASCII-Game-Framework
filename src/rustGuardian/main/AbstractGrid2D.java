@@ -85,7 +85,7 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 	 *         where false represents a unit not being present
 	 */
 	public boolean unitConnect(Point loc, Direction dir) {
-		E subUnit = unitAt(new Point((int) (loc.x + dir.offSet().getX()), (int) (loc.y + dir.offSet().getY())));
+		E subUnit = unitAt(new Point((int) (loc.x + dir.offset().getX()), (int) (loc.y + dir.offset().getY())));
 		if (subUnit == null) {
 			return false;
 		} else {

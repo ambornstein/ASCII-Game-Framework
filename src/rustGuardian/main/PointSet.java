@@ -10,9 +10,51 @@ import javafx.geometry.Point3D;
  */
 public class PointSet extends HashSet<Point3D> {
 	private static final long serialVersionUID = 1L;
+	private	Point3D startCorner;
+	private Point3D endCorner;
 	
 	public PointSet(Point3D startCorner, Point3D endCorner) {
 		construct(startCorner, endCorner);
+	}
+	
+	public Point3D startCorner() {
+		return startCorner;
+	}
+	
+	public Point3D endCorner() {
+		return endCorner;
+	}
+	
+	public Point3D range() {
+		return endCorner.subtract(startCorner);
+	}
+	
+	public Point3D delta(Point3D p) {
+		return p.subtract(startCorner);
+	}
+	
+	public int deltaX(Point3D p) {
+		return (int) delta(p).getX();
+	}
+	
+	public int deltaX(int p) {
+		return p-(int)startCorner.getX();
+	}
+	
+	public int deltaY(Point3D p) {
+		return (int) delta(p).getY();
+	}
+	
+	public int deltaY(int p) {
+		return p-(int)startCorner.getY();
+	}
+	
+	public int deltaZ(Point3D p) {
+		return (int) delta(p).getZ();
+	}
+	
+	public int deltaZ(int p) {
+		return p-(int)startCorner.getZ();
 	}
 
 	/**Creates a rectangular set of points from an initial and final point.
@@ -20,13 +62,11 @@ public class PointSet extends HashSet<Point3D> {
 	 * @param startCorner Point3D of the lower bound corner
 	 * @param endCorner Point3D of the upper bound corner
 	 */
-	public void construct(Point3D startCorner, Point3D endCorner) { // copies all of the tiles from the startCorner to
+	public void construct(Point3D start, Point3D end) { // copies all of the tiles from the startCorner to
 																	// the endCorner to this PointSet
-		startCorner = RelativePos.correctOutOfBounds(startCorner); // Correct positions that are out of the bounds of
-																	// the world
+		this.startCorner = RelativePos.correctOutOfBounds(start);
+		this.endCorner = RelativePos.correctOutOfBounds(end);
 		RelativePos startCornerRel = RelativePos.toRel(startCorner); // Make Relative copies of both for future
-																		// compare()
-		endCorner = RelativePos.correctOutOfBounds(endCorner);
 		RelativePos endCornerRel = RelativePos.toRel(endCorner);
 		if (endCornerRel.compare(startCornerRel) == -1) {
 			for (int y = (int) startCorner.getY(); y <= endCorner.getY(); y++) {

@@ -140,39 +140,4 @@ public class MapChunk extends AbstractGrid3D<Tile> {
 		}
 		return blockMap;
 	}
-	/*
-	 * public int[][] calculateFOV(int startx, int starty, int radius) { int[][]
-	 * visMap = new int[super.width()][super.length()]; visMap[starty][startx] = 1;
-	 * 
-	 * for (Direction d : Direction.DIAGONAL) { castLight(1, 1.0f, 0.0f, 0,
-	 * d.xOffset(), d.yOffset(), 0, radius, startx, starty, visMap,
-	 * this.opaqueScan()); castLight(1, 1.0f, 0.0f, d.xOffset(), 0, 0, d.yOffset(),
-	 * radius, startx, starty, visMap, this.opaqueScan()); } return visMap; }
-	 * 
-	 * /**
-	 * 
-	 * @TODO Stop the scan from exceeding the boundaries of the map. This causes the
-	 * program to screw up. After this the algorithm should function correctly
-	 */
-	/*
-	 * private int[][] castLight(int row, float start, float end, int xx, int xy,
-	 * int yx, int yy, int radius, int startx, int starty, int[][] visMap, int[][]
-	 * opaqueMap) { float newStart = 0.0f; if (start < end) { return visMap; }
-	 * boolean blocked = false; for (int distance = row; distance <= radius &&
-	 * distance < super.width() + super.length(); distance++) { int deltaY =
-	 * -distance; for (int deltaX = -distance; deltaX <= 0; deltaX++) { int currentX
-	 * = startx + (deltaX * xx) + (deltaY * xy); int currentY = starty + (deltaX *
-	 * yx) + (deltaY * yy); float leftSlope = (deltaX - 0.5f) / (deltaY + 0.5f);
-	 * float rightSlope = (deltaX + 0.5f) / (deltaY - 0.5f); if (!(currentX >= 0 &&
-	 * currentY >= 0 && currentX < super.width() && currentY < super.length() ||
-	 * start < rightSlope)) { continue; } else if (end > leftSlope || currentX < 0
-	 * || currentY < 0) { break; } if (distance <= radius) {
-	 * visMap[currentY][currentX] = 1; } if (blocked) { if
-	 * (opaqueMap[currentY][currentX] >= 1) { newStart = rightSlope; } else {
-	 * blocked = false; start = newStart; } } else { if
-	 * (opaqueMap[currentY][currentX] >= 1 && distance < radius) { blocked = true;
-	 * visMap = castLight(distance + 1, start, leftSlope, xx, xy, yx, yy, radius,
-	 * startx, starty, visMap, opaqueMap); newStart = rightSlope; } } } } return
-	 * visMap; }
-	 */
 }

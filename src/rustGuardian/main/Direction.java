@@ -15,10 +15,10 @@ public enum Direction {
 	public static final Direction[] AXIS = { NORTH, SOUTH, EAST, WEST, UP, DOWN };
 	public static final Direction[] DIAGONAL = { NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST };
 
-	private final Point3D offSet;
+	private final Point3D offset;
 
-	public Point3D offSet() {
-		return offSet;
+	public Point3D offset() {
+		return offset;
 	}
 
 	public static final boolean inDirCategory(Direction subjectDir, Direction[] dirCategory) {
@@ -31,15 +31,15 @@ public enum Direction {
 	}
 
 	Direction(int x, int y, int z) {
-		offSet = new Point3D(x, y, z);
+		offset = new Point3D(x, y, z);
 	}
 
 	Direction(Point3D offSet) {
-		this.offSet = offSet;
+		this.offset = offSet;
 	}
 
 	@Override
 	public String toString() {
-		return name() + ": " + offSet();
+		return name() + ": " + offset();
 	}
 }

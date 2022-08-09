@@ -85,7 +85,7 @@ public abstract class AbstractGrid3D<E> extends ArrayList<ArrayList<ArrayList<E>
 	 *         where false represents a unit not being present
 	 */
 	public boolean unitConnect(Point3D loc, Direction dir) {
-		E subUnit = unitAt(loc.add(dir.offSet()));
+		E subUnit = unitAt(loc.add(dir.offset()));
 		if (subUnit == null) {
 			return false;
 		} else {

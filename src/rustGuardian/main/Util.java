@@ -23,7 +23,23 @@ public class Util {
 		return new Point(point.x-1, point.y-1);
 	}
 	
+	public static Point decrement(int x, int y) {
+		return new Point(x-1, y-1);
+	}
+	
+	public static Point decrement(double x, double y) {
+		return new Point((int) x-1, (int) y-1);
+	}
+	
 	public static Point3D decrement(Point3D point) {
 		return new Point3D(point.getX()-1, point.getY()-1, point.getZ()-1);
+	}
+	
+	public static Point3D decrement(int x, int y, int z) {
+		return new Point3D(x-1, y-1, z-1);
+	}
+	
+	public static Point3D decrement(double x, double y, double z) {
+		return new Point3D(x-1, y-1, z-1);
 	}
 }

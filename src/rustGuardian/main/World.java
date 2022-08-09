@@ -69,38 +69,17 @@ public class World extends AbstractGrid2D<MapChunk> {
 		// fill() must be called here and not in Abst
 		fill();
 		flagBorders();
-	}
-
-	public MapChunk subsection(Point3D startCorner, Point3D endCorner) { //copies all of the tiles from the startCorner to the endCorner
-		startCorner = RelativePos.correctOutOfBounds(startCorner); //Correct positions that are out of the bounds of the world
-		RelativePos startCornerRel = RelativePos.toRel(startCorner); //Make Relative copies of both for future compare()
-		endCorner = RelativePos.correctOutOfBounds(endCorner);
-		RelativePos endCornerRel = RelativePos.toRel(endCorner);
-		Point3D deltaPos = endCorner.subtract(startCorner);
-		MapChunk returnChunk = new MapChunk(deltaPos);
-		if(endCornerRel.compare(startCornerRel) == -1) {
-			for(int z = 0; z <= deltaPos.getZ(); z++) {
-				for(int y = 0; y <= deltaPos.getY(); y++) {
-					for(int x = 0; x <= deltaPos.getX(); x++) {
-						returnChunk.place(new Point3D(x,y,z), absoluteFindTile(new Point3D(x+startCorner.getX(),y+startCorner.getY(),z+startCorner.getZ())));
-						}
-					}
-				}
-			return returnChunk;
-		} 
-		return null;
-		}
-		 
+	}		 
 
 	private void flagBorders() {
 		PointSet borderSet;
 		Point3D dims = gen.toAbs();
 		for (Direction dir : Direction.AXIS) {// Loop through NORTH, SOUTH, EAST, WEST, UP, DOWN
-			Point3D originCorner = new Point3D(dims.getX() * dir.offSet().getX(), dims.getY() * dir.offSet().getY(),
-					dims.getZ() * dir.offSet().getZ());
-			Point3D destinationCorner = new Point3D(dims.getX() + (dims.getX() * dir.offSet().getX()),
-					dims.getY() + (dims.getY() * dir.offSet().getY()),
-					dims.getZ() + (dims.getZ() * dir.offSet().getZ()));
+			Point3D originCorner = new Point3D(dims.getX() * dir.offset().getX(), dims.getY() * dir.offset().getY(),
+					dims.getZ() * dir.offset().getZ());
+			Point3D destinationCorner = new Point3D(dims.getX() + (dims.getX() * dir.offset().getX()),
+					dims.getY() + (dims.getY() * dir.offset().getY()),
+					dims.getZ() + (dims.getZ() * dir.offset().getZ()));
 			borderSet = new PointSet(originCorner, destinationCorner);
 			//borderSet.forEach(point -> System.out.println(point));
 			borderSet.forEach(point -> {
@@ -109,17 +88,24 @@ public class World extends AbstractGrid2D<MapChunk> {
 		}
 	}
 	
-	// Should be rewritten to generalize later, once it becomes evident what other
-	// grids should be copied
 	public MapChunk copyGrid(Point3D startPoint, Point3D endPoint) {
 		PointSet set = new PointSet(startPoint, endPoint);
-		Point3D deltaPoint = new Point3D(endPoint.getX() - startPoint.getX(), endPoint.getY() - startPoint.getY(),
-				endPoint.getZ() - startPoint.getZ());
+		Point3D deltaPoint = set.range();
 		if (this.isEmpty()) {
 			return new MapChunk(0, 0, 0);
 		}
 		MapChunk returnChunk = new MapChunk(deltaPoint);
-		set.forEach((Point3D p) -> returnChunk.place( new Point3D(p.getX() - startPoint.getX(), p.getY() - startPoint.getY(), p.getZ() - startPoint.getZ()), absoluteFindTile(p)));
+		set.forEach((Point3D p) -> returnChunk.place(p.subtract(set.startCorner()), absoluteFindTile(p)));
+		return returnChunk;
+	}
+	
+	public MapChunk copyGrid(PointSet set) {
+		Point3D deltaPoint = set.range();
+		if (this.isEmpty()) {
+			return new MapChunk(0, 0, 0);
+		}
+		MapChunk returnChunk = new MapChunk(deltaPoint);
+		set.forEach((Point3D p) -> returnChunk.place(p.subtract(set.startCorner()), absoluteFindTile(p)));
 		return returnChunk;
 	}
 }

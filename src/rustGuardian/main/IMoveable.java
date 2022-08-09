@@ -15,4 +15,6 @@ public interface IMoveable {
 	public RelativePos getRelPosition();
 
 	public Point3D getAbsPosition();
+	
+	public int sightRad();
 }
