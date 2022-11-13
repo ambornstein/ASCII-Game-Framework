@@ -1,6 +1,7 @@
 package rustGuardian.main;
 
 import javafx.geometry.Point3D;
+import rustGuardian.domain.RelativePos;
 
 /**
  * Player class which currently represents the character that can be controlled.
@@ -8,19 +9,12 @@ import javafx.geometry.Point3D;
  * Can only move now. Stores position in a {@link java.awt.Point}
  */
 public class Player extends AbstractMoveable {
-	private int sightRad;
-
-	public int sightRad() {
-		return sightRad;
-	}
 
 	public Player(Point3D initPos) {
-		super(initPos, true, '@', false);
-		sightRad = 7;
+		super(initPos, true, '@', false, 7);
 	}
-	
+
 	public Player(RelativePos initPos) {
-		super(initPos, true, '@', false);
-		sightRad = 7;
+		super(initPos, true, '@', false, 7);
 	}
 }

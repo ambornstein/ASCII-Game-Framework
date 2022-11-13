@@ -1,41 +1,45 @@
 package rustGuardian.main;
 
 import javafx.geometry.Point3D;
+import rustGuardian.domain.RelativePos;
 
 public abstract class AbstractMoveable implements IMoveable {
 	protected boolean visible;
 	protected char symbol;
-	protected boolean passBarriers;
-	protected Point3D absPosition;
-	
+	private boolean passBarriers;
+	public Point3D absPosition;
+	protected int sightRad;
+
 	public AbstractMoveable(RelativePos relPoint) {
-		placeMoveable(relPoint);
+		setPos(relPoint);
 		visible = false;
 		symbol = ' ';
-		passBarriers = true;
-	}
-	
-	public AbstractMoveable(Point3D startPoint) {
-		placeMoveable(startPoint);
-		visible = false;
-		symbol = ' ';
-		passBarriers = true;
-	}
-	
-	public AbstractMoveable(RelativePos relPoint, boolean visible, char symbol, boolean passBarriers) {
-		placeMoveable(relPoint);
-		this.visible = visible;
-		this.symbol = symbol;
-		this.passBarriers = passBarriers;
+		setPassBarriers(true);
 	}
 
-	public AbstractMoveable(Point3D startPoint, boolean visible, char symbol, boolean passBarriers) {
-		placeMoveable(startPoint);
+	public AbstractMoveable(Point3D startPoint) {
+		setPos(startPoint);
+		visible = false;
+		symbol = ' ';
+		setPassBarriers(true);
+	}
+
+	public AbstractMoveable(RelativePos relPoint, boolean visible, char symbol, boolean passBarriers, int sightRad) {
+		setPos(relPoint);
 		this.visible = visible;
 		this.symbol = symbol;
-		this.passBarriers = passBarriers;
+		this.setPassBarriers(passBarriers);
+		this.sightRad = sightRad;
 	}
-	
+
+	public AbstractMoveable(Point3D startPoint, boolean visible, char symbol, boolean passBarriers, int sightRad) {
+		setPos(startPoint);
+		this.visible = visible;
+		this.symbol = symbol;
+		this.setPassBarriers(passBarriers);
+		this.sightRad = sightRad;
+	}
+
 	@Override
 	public char getSymbol() {
 		return symbol;
@@ -55,11 +59,10 @@ public abstract class AbstractMoveable implements IMoveable {
 	public void setPos(Point3D newPos) {
 		absPosition = new Point3D(newPos.getX(), newPos.getY(), newPos.getZ());
 	}
-	
+
 	public void setPos(RelativePos newPos) {
 		absPosition = new Point3D(newPos.toAbs().getX(), newPos.toAbs().getY(), newPos.toAbs().getZ());
 	}
-	
 
 	@Override
 	public boolean getVisible() {
@@ -70,35 +73,17 @@ public abstract class AbstractMoveable implements IMoveable {
 	public void setVisible(boolean newVis) {
 		visible = newVis;
 	}
-	/**
-	 * 
-	 * @param placePoint An absolute point representing what map tile the object will be placed on
-	 */
-	public void placeMoveable(Point3D placePoint) {
-		System.out.println(placePoint);
-		placeMoveable(RelativePos.toRel(placePoint));
-	}
-	
-	private void placeMoveable(RelativePos relPoint) {
-		if (passBarriers || RelativePos.generalWorld().relativeFindTile(relPoint).passable()) {
-			this.setPos(relPoint);
-		} else {
-			System.out.println("Constrained Moveable : " + this + "blocked from placement at + " + relPoint.toAbs() + " by "
-					+ RelativePos.generalWorld().relativeFindTile(relPoint) + " : " + relPoint);
-		}
-	}
 
 	@Override
-	public void move(Direction d) {
-		RelativePos rel = RelativePos.toRel(absPosition.add(d.offSet())); // Convert to relative in order to access the
-																			// methods required for the next if
-																			// statement
-		if ((passBarriers || RelativePos.generalWorld().relativeFindTile(rel).passable()) && RelativePos.generator().compare(rel) == -1) { 
-			// if object is constrained by boundaries, test the passability of the tile to move to, and if it is in bounds
-			absPosition = absPosition.add(d.offSet()); // the test is passed, allowing the real position to be changed
-			ApplicationMain.refresh();
-		}
+	public int sightRad() {
+		return sightRad;
 	}
 
-	
+	public boolean passesBarriers() {
+		return passBarriers;
+	}
+
+	public void setPassBarriers(boolean passBarriers) {
+		this.passBarriers = passBarriers;
+	}
 }

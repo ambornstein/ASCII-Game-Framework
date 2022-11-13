@@ -1,14 +1,22 @@
 package rustGuardian.main;
 
-import java.util.HashMap;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.util.HashMap;
+
+import javafx.geometry.Point3D;
+import rustGuardian.domain.Direction;
+import rustGuardian.domain.EntityContainer;
 
 public class Control {
 	private static HashMap<Integer, String> lookScheme; // control scheme when in look mode
 	private static HashMap<Integer, String> standardScheme; // control scheme default
 	private static HashMap<Integer, String> currentScheme;
+	private static EntityContainer beings;
 
-	public Control() {
+	public Control(EntityContainer beings) {
+		Control.beings = beings;
 		Integer[] keyCodes = { KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_COMMA,
 				KeyEvent.VK_PERIOD, KeyEvent.VK_L, KeyEvent.VK_ESCAPE }; // All potential keystroke mappings
 		// go here
@@ -28,7 +36,7 @@ public class Control {
 																										// actioncodes,
 																										// construct a
 																										// HashMap
-		HashMap<Integer, String> returnMap = new HashMap<Integer, String>();
+		HashMap<Integer, String> returnMap = new HashMap<>();
 		for (int i = 0; i < Math.min(keyCodes.length, actionCodes.length); i++) { // if unequal sizes, stop mapping as
 																					// soon as one of the list's
 																					// capacities are reached
@@ -43,41 +51,56 @@ public class Control {
 			if (e.isShiftDown()) {
 				switch (press) {
 					case "up":
-						EntityContainer.activeEntity().move(Direction.UP);
+						beings.move(Direction.UP);
 						break;
 					case "down":
-						EntityContainer.activeEntity().move(Direction.DOWN);
+						beings.move(Direction.DOWN);
 						break;
 				}
 			}
 			else {
 				switch (press) {
 				case "north":
-					EntityContainer.activeEntity().move(Direction.NORTH);
+					beings.move(Direction.NORTH);
 					break;
 				case "south":
-					EntityContainer.activeEntity().move(Direction.SOUTH);
+					beings.move(Direction.SOUTH);
 					break;
 				case "west":
-					EntityContainer.activeEntity().move(Direction.WEST);
+					beings.move(Direction.WEST);
 					break;
 				case "east":
-					EntityContainer.activeEntity().move(Direction.EAST);
+					beings.move(Direction.EAST);
 					break;
 				case "look_mode":
 					switchScheme(lookScheme);
-					EntityContainer.getDefaultCursorEntity().setVisible(true);
-					EntityContainer.cursorActivate();
-					ApplicationMain.refresh();
+					beings.activateCursor();
+					beings.activeCursor().setVisible(true);
 					break;
 				case "standard_mode":
 					switchScheme(standardScheme);
-					EntityContainer.getDefaultCursorEntity().setVisible(false);
-					EntityContainer.playerActivate();
-					ApplicationMain.refresh();
+					beings.activatePlayer();
+					beings.activeCursor().setVisible(false);
 					break;
 				}
 			}
 		}
+	}
+
+	public static Point3D handleMouse(MouseEvent e, Point termLoc, int originX, int originY, int originZ) {
+		return handleMouse(e, termLoc, new Point3D(originX, originY, originZ));
+	}
+
+	public static Point3D handleMouse(MouseEvent e, int x, int y, Point3D origin) {
+		return handleMouse(e, new Point(x,y), origin);
+	}
+
+	public static Point3D handleMouse(MouseEvent e, int x, int y, int originX, int originY, int originZ) {
+		return handleMouse(e, new Point(x,y), new Point3D(originX, originY, originZ));
+	}
+
+	public static Point3D handleMouse(MouseEvent e, Point termLoc, Point3D origin) {
+		Point3D mouseLoc = new Point3D(Math.floor(e.getX()/termLoc.getX()), Math.floor(e.getY()/termLoc.getY()), 0);
+		return new Point3D(origin.getX()+mouseLoc.getX(), origin.getY()+mouseLoc.getY(), origin.getZ());
 	}
 }
