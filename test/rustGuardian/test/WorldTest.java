@@ -1,19 +1,22 @@
 package rustGuardian.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.*;
-import org.junit.jupiter.api.BeforeAll;
+import java.awt.Point;
 
-import rustGuardian.main.RelativePos;
-import rustGuardian.main.Tile;
-import rustGuardian.main.World;
+import org.junit.Test;
+
+import javafx.geometry.Point3D;
+import rustGuardian.domain.Generator;
+import rustGuardian.domain.RelativePos;
+import rustGuardian.domain.Tile;
+import rustGuardian.domain.World;
 
 public class WorldTest {
-	RelativePos gen = new RelativePos(2, 2, 40, 25, 5);
-	World world = RelativePos.makeWorld(gen);
-	
-	
+	RelativePos gen = new RelativePos(new Point(2, 2), new Point3D(40, 25, 5));
+	World world = new World(new Generator(gen));
+
+
 	/* RelativePos gen = new RelativePos(2,2,40,25,5);
 	 * Point3D dims = RelativePos.generator().toAbs(); for (Direction dir :
 	 * Direction.AXIS) { Point3D originCorner = new Point3D(dims.getX() *

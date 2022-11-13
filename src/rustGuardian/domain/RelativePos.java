@@ -1,6 +1,7 @@
-package rustGuardian.main;
+package rustGuardian.domain;
 
 import java.awt.Point;
+
 import javafx.geometry.Point3D;
 
 /**
@@ -10,7 +11,7 @@ import javafx.geometry.Point3D;
  * which represents a position in the world irrespective of chunk points. Static
  * method toRel() returns a RelativePos from a Point. RelativePos always
  * requires a static generator to determine the length and width of chunks.
- * 
+ *
  * RelativePos are stored as literal integers, meaning 1 for 1, not 0 for 1
  * They used to be stored as start-at-0 integers, although when converting to
  * absolute, 1 integer was lost for every chunk that was present within the position
@@ -23,6 +24,7 @@ public class RelativePos {
 	private Point chunkPoint;
 	private Point3D tilePoint;
 	private static Generator generator;
+	private static Generator zero = new Generator(0,0,0,0,0);
 
 	/**
 	 * Getter for chunkPoint
@@ -62,9 +64,13 @@ public class RelativePos {
 		this.chunkPoint = chunkPoint;
 		this.tilePoint = tilePoint;
 	}
-	
+	public RelativePos(RelativePos same) {
+		this.chunkPoint = same.chunkPoint();
+		this.tilePoint = same.tilePoint();
+	}
+
 	/**Determines the whether the test object falls within, on the outside, on the border, or short of this object
-	 * 
+	 *
 	 * @param testRelative The other RelativePos object
 	 * @return n Signifies the result of the comparison (1 = test is greater than the boundaries, 0 = test is equal to the boundaries, -1 = test is within the boundaries, -2 = test is less than origin (0,0,0))
 	 */
@@ -143,15 +149,15 @@ public class RelativePos {
 				(int) Math.floor((absPoint.getX()) / generator.tilePoint().getX())+1, // Finds out what chunk the absPoint falls in
 				(int) Math.floor((absPoint.getY()) / generator.tilePoint().getY())+1); // Can't use ceiling because the ceiling of 0 is 0
 		Point3D tileLoc = new Point3D(
-				((absPoint.getX() + 1) - ((generator.tilePoint().getX() - 1) * (chunkLoc.x-1))), 
+				((absPoint.getX() + 1) - ((generator.tilePoint().getX() - 1) * (chunkLoc.x-1))),
 				((absPoint.getY() + 1) - ((generator.tilePoint().getY() - 1) * (chunkLoc.y-1))), absPoint.getZ()+1);
 		// Cuts off the amount of tiles that are outside this chunk
 		return new RelativePos(chunkLoc, tileLoc);
 	}
 
 	/**
-	 * A method to convert this RelChunkPos object into an absolute Point
-	 * 
+	 * A method to convert this into an absolute Point
+	 *
 	 * @return The RelChunkPos object's position expressed as an absolute Point in
 	 *         the World, irrespective of chunk
 	 */
@@ -164,8 +170,8 @@ public class RelativePos {
 	}
 
 	/**
-	 * Shifts the position of the RelChunk pos by the amount given in arguments
-	 * 
+	 * Shifts the position of this by the amount given in arguments
+	 *
 	 * @param xShift
 	 *            How much to shift on the x axis
 	 * @param yShift
@@ -179,7 +185,7 @@ public class RelativePos {
 
 	/**
 	 * Returns a clone of this RelativePos which is shifted by the desired amount
-	 * 
+	 *
 	 * @param xShift
 	 *            How much to shift on the x axis
 	 * @param yShift

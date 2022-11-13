@@ -1,4 +1,4 @@
-package rustGuardian.main;
+package rustGuardian.domain;
 
 import java.awt.Point;
 

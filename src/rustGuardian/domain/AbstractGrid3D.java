@@ -1,11 +1,12 @@
-package rustGuardian.main;
+package rustGuardian.domain;
 
 import java.awt.Point;
 import java.util.ArrayList;
+
 import javafx.geometry.Point3D;
 
 /**Abstract for the purpose of creating 3D grids
- * 
+ *
  * @author ambor
  *
  * @param <E> Class of structure that composes the grid
@@ -15,9 +16,21 @@ public abstract class AbstractGrid3D<E> extends ArrayList<ArrayList<ArrayList<E>
 	protected int length; // Xaxis
 	protected int width; // Yaxis
 	protected int height; // Zaxis
+	
+	public AbstractGrid3D(int length, int width, int height) {
+		this.length = length;
+		this.width = width;
+		this.height = height;
+	}
+
+	public AbstractGrid3D(double length, double width, double height) {
+		this.length = (int) length;
+		this.width = (int) width;
+		this.height = (int) height;
+	}
 
 	/**Horizontal (X) dimension of this grid
-	 * 
+	 *
 	 */
 	@Override
 	public int length() {
@@ -25,21 +38,21 @@ public abstract class AbstractGrid3D<E> extends ArrayList<ArrayList<ArrayList<E>
 	}
 
 	/**Lateral (Y) dimension of this grid
-	 * 
+	 *
 	 */
 	@Override
 	public int width() {
 		return width;
 	}
-	
+
 	/**Vertical (Z) dimension of this grid
-	 * 
+	 *
 	 */
 	@Override
 	public int height() {
 		return height;
 	}
-	
+
 	/**
 	 * Fills the Grid with generic placeholder units to mark space that will be used
 	 * by more specific units in the future. It is difficult to place a unique
@@ -52,7 +65,7 @@ public abstract class AbstractGrid3D<E> extends ArrayList<ArrayList<ArrayList<E>
 
 	/**
 	 * Return a unit that is located at the provided Point
-	 * 
+	 *
 	 * @param loc
 	 *            Point of the unit that should be returned.
 	 * @return Tile of either a valid unit in case of it being found, or null if not
@@ -65,7 +78,7 @@ public abstract class AbstractGrid3D<E> extends ArrayList<ArrayList<ArrayList<E>
 			return null;
 		}
 	}
-	
+
 	@Override
 	public E unitAt(Point loc) {
 		return unitAt(new Point3D(loc.x, loc.y, 0));
@@ -75,7 +88,7 @@ public abstract class AbstractGrid3D<E> extends ArrayList<ArrayList<ArrayList<E>
 	 * Test of whether a unit connects to the unit at the specified Point, in a
 	 * certain Direction. It does not have an Object argument because at the current
 	 * state, it tests whether a unit EXISTS, not if it matches a certain Object.
-	 * 
+	 *
 	 * @param loc
 	 *            Point that the test originates from.
 	 * @param dir
@@ -92,10 +105,10 @@ public abstract class AbstractGrid3D<E> extends ArrayList<ArrayList<ArrayList<E>
 			return true;
 		}
 	}
-	
+
 	/**
 	 * Places or replaces a unit on a specified location.
-	 * 
+	 *
 	 * @param loc
 	 *            Point to place the unit at
 	 * @param unit
@@ -108,17 +121,5 @@ public abstract class AbstractGrid3D<E> extends ArrayList<ArrayList<ArrayList<E>
 		} catch (IndexOutOfBoundsException i) {
 			System.out.println("Unable to place tile " + unit + " in 3D Grid:" + loc + " | Limit: " + new Point3D(length, width, height));
 		}
-	}
-
-	public AbstractGrid3D(int length, int width, int height) {
-		this.length = length;
-		this.width = width;
-		this.height = height;
-	}
-
-	public AbstractGrid3D(double length, double width, double height) {
-		this.length = (int) length;
-		this.width = (int) width;
-		this.height = (int) height;
 	}
 }

@@ -1,4 +1,4 @@
-package rustGuardian.main;
+package rustGuardian.domain;
 
 import javafx.geometry.Point3D;
 

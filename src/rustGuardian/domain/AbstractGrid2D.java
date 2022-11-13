@@ -1,35 +1,35 @@
-package rustGuardian.main;
+package rustGuardian.domain;
 
 import java.awt.Point;
 import java.util.ArrayList;
 
 /**
  * Abstract for the purposes of creating 2D grids.
- * 
+ *
  * @author ambor
  *
  * @param <E> Class of structure that composes the grid
  */
 public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implements GridInterface<E> {
 	private static final long serialVersionUID = 1060623638149583738L;
-	private int length; // Xaxis
-	private int width; // Yaxis
-	
+	protected int length; // Xaxis
+	protected int width; // Yaxis
+
 	public AbstractGrid2D(Point dims) {
 		length = dims.x;
 		width = dims.y;
 	}
-	
+
 	/**Horizontal (X) dimension of this grid
-	 * 
+	 *
 	 */
 	@Override
 	public int length() {
 		return length;
 	}
-	
+
 	/**Lateral (Y) dimension of this grid
-	 * 
+	 *
 	 */
 	@Override
 	public int width() {
@@ -37,7 +37,7 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 	}
 
 	/**Vertical (Z) dimension of this grid (Always 0 for 2d grid)
-	 * 
+	 *
 	 */
 	@Override
 	public int height() {
@@ -56,7 +56,7 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 
 	/**
 	 * Return a unit that is located at the provided Point
-	 * 
+	 *
 	 * @param loc
 	 *            Point of the unit that should be returned.
 	 * @return Tile of either a valid unit in case of it being found, or null if not
@@ -75,7 +75,7 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 	 * Test of whether a unit connects to the unit at the specified Point, in a
 	 * certain Direction. It does not have an Object argument because at the current
 	 * state, it tests whether a unit EXISTS, not if it matches a certain Object.
-	 * 
+	 *
 	 * @param loc
 	 *            Point that the test originates from.
 	 * @param dir
@@ -95,7 +95,7 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 
 	/**
 	 * Places or replaces a unit on a specified location.
-	 * 
+	 *
 	 * @param loc
 	 *            Point to place the unit at
 	 * @param unit

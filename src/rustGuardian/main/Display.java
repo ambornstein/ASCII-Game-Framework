@@ -1,7 +1,15 @@
 package rustGuardian.main;
 
+import java.awt.Point;
+
 import asciiPanel.AsciiPanel;
 import javafx.geometry.Point3D;
+import rustGuardian.domain.Direction;
+import rustGuardian.domain.EntityContainer;
+import rustGuardian.domain.MapChunk;
+import rustGuardian.domain.PointSet;
+import rustGuardian.domain.RelativePos;
+import rustGuardian.domain.World;
 
 public class Display {
 	private static World world;
@@ -10,6 +18,7 @@ public class Display {
 	private static Point3D frameOrigin;
 	private static Point3D frameDestination;
 	private static Point3D viewMargin;
+	private static Point3D screenSize;
 	private static int visX;
 	private static int visY;
 	private static int visRad;
@@ -17,49 +26,43 @@ public class Display {
 	private static int visHeight;
 	private static float[][] visMap;
 	private static int[][] resistanceMap;
+	private static AbstractMoveable focusObject;
+	private static Point3D focusLocation;
 
-	public Display(AsciiPanel terminal, World world, EntityContainer beings) {
-		this.world = world;
-		this.terminal = terminal;
-		this.beings = beings;
-		viewMargin = new Point3D(world.getGenerator().tilePoint().getX()-1, world.getGenerator().tilePoint().getY()-1, 0);
+	public Display(AsciiPanel terminal, World world, EntityContainer beings, Point screenSize) {
+		Display.world = world;
+		Display.terminal = terminal;
+		Display.beings = beings;
+		Display.screenSize = new Point3D(screenSize.x, screenSize.y, 0);
+		focusObject = beings.activeUnit();
 	}
-	
+
 	public static Point3D getFrameOrigin() {
 		return frameOrigin;
 	}
 
 	public static void playerPerspectiveDisplay() {
-		AbstractMoveable focusObject = beings.activeUnit();
-		Point3D focusLocation = focusObject.getAbsPosition();
-		Point3D focusBounds= new Point3D(focusObject.sightRad, focusObject.sightRad, 0);
-		frameOrigin = RelativePos.correctOutOfBounds(focusLocation.subtract(viewMargin));
-		frameDestination = new Point3D((viewMargin.getX()*2)+1, (viewMargin.getY()*2)+1, frameOrigin.getZ());
-		MapChunk viewSlice = world.copyGrid(focusLocation.subtract(focusBounds), focusLocation.add(focusBounds));
-		MapChunk viewChunk = world.copyGrid(frameOrigin, frameDestination);
-		if(focusObject.sightRad() != 0) {
-			//calculateFOV(viewSlice.opaqueScan()[(int)frameOrigin.getZ()], (int)focusLocation.getX(), (int)focusLocation.getY(), focusObject.sightRad());
-		}
+		focusLocation = focusObject.getAbsPosition();
+		frameOrigin = RelativePos.correctOutOfBounds(focusLocation.subtract(screenSize));
+		frameDestination = RelativePos.correctOutOfBounds(frameOrigin.add(screenSize));
+		PointSet frame = new PointSet(frameOrigin,frameDestination);
+		MapChunk viewChunk = world.copyGrid(frame);
+		calculateFOV(viewChunk.opaqueScan()[0],(int)focusLocation.getX(),(int)focusLocation.getY(), focusObject.sightRad());
 		Point3D playerSite = focusLocation.subtract(frameOrigin);
-		for (int y = 0; y <= viewChunk.width(); y++) {
-			for (int x = 0; x <= viewChunk.length(); x++) {
-				//if (x == frameOrigin.getX() && y == frameOrigin.getY()) {
-					//for (int j = 0; j < visMap.length; j++) {
-						//for (int i = 0; i < visMap[0].length; i++) {
-							//if (visMap[j][0] == 1.0f) {
-								try {
-									terminal.write(viewChunk.unitAt(new Point3D(x,y,0)).symbol(), x, y);
-								}
-								catch (NullPointerException e) {
-									terminal.write(' ', x, y);
-								}
-							//}
-						//}
-					//}
-				//}
+		for (int j = (int)frameOrigin.getY(); j < visMap.length; j++) {
+			for (int i = (int)frameOrigin.getX(); i < visMap[0].length; i++) {
+				if (visMap[j][i] == 1.0f) {
+					Point screenTile = new Point((int)(i-frameOrigin.getX()),(int)(j-frameOrigin.getY()));
+					try {
+						terminal.write(viewChunk.unitAt(new Point3D(i,j,0)).symbol(), screenTile.x, screenTile.y);
+					}
+					catch (NullPointerException e) {
+						terminal.write(' ', screenTile.x, screenTile.y);
+					}
+				}
 			}
 		}
-		terminal.write(focusObject.getSymbol(), (int)playerSite.getX(), (int)playerSite.getY());
+		terminal.write(focusObject.getSymbol(), (int)(playerSite.getX()-frameOrigin.getX()), (int)(playerSite.getY()-frameOrigin.getY()));
 		terminal.write(String.valueOf(frameOrigin.getZ()), 0, 0);
 	}
 
@@ -89,19 +92,19 @@ public class Display {
 		visMap[starty][startx] = 1.0f;
 		for (Direction d : Direction.DIAGONAL) {
 			castLight(1, 1.0f, 0.0f, 0, (int)d.offset().getX(), (int)d.offset().getY(), 0);
-			castLight(1, 1.0f, 0.0f, (int)d.offset().getX(), 0, 0, (int)d.offset().getY()); 
+			castLight(1, 1.0f, 0.0f, (int)d.offset().getX(), 0, 0, (int)d.offset().getY());
 		}
 		return visMap;
 	}
-	
+
 	 /**
-	 * 
+	 *
 	 * @TODO Stop the scan from exceeding the boundaries of the map. This causes the
 	 * program to screw up. After this the algorithm should function correctly
 	 */
 
 	private static void castLight(int row, float start, float end, int xx, int xy, int yx, int yy) {
-		float newStart = 0.0f; 
+		float newStart = 0.0f;
 		if (start < end) { return; }
 		boolean blocked = false;
 		for (int distance = row; distance <= visRad && distance < visWidth + visHeight; distance++) {
@@ -111,31 +114,31 @@ public class Display {
 				int currentY = visY + (deltaX * yx) + (deltaY * yy);
 				float leftSlope = (deltaX - 0.5f) / (deltaY + 0.5f);
 				float rightSlope = (deltaX + 0.5f) / (deltaY - 0.5f);
-				
-				if (!(currentX >= 0 && currentY >= 0 && currentX < visWidth && currentY < visHeight || start < rightSlope)) { 
+				if (!(currentX < visWidth && currentY < visHeight)) break;
+				if (!(currentX >= 0 && currentY >= 0 && currentX < visWidth && currentY < visHeight || start < rightSlope)) {
 					continue;
 				}
-				else if (end > leftSlope || currentX < 0|| currentY < 0) {
+				else if (end > leftSlope || currentX < 0 || currentY < 0) {
 					break;
 				}
-				
+
 				if (Math.sqrt(Math.pow(deltaX,2)+Math.pow(deltaY,2)) <= visRad) {
 					visMap[currentY][currentX] = 1.0f;
 				}
 				if (blocked) {
 					if (resistanceMap[currentY][currentX] >= 1) { newStart = rightSlope; }
-					else { 
+					else {
 						blocked = false;
 						start = newStart;
-					}  
+					}
 				}
 				else {
-					if (resistanceMap[currentY][currentX] >= 1 && distance < visRad) { 
+					if (resistanceMap[currentY][currentX] >= 1 && distance < visRad) {
 						blocked = true;
-						castLight(distance + 1, start, leftSlope, xx, xy, yx, yy); 
-						newStart = rightSlope; 
-					} 
-				} 
+						castLight(distance + 1, start, leftSlope, xx, xy, yx, yy);
+						newStart = rightSlope;
+					}
+				}
 			}
 		}
 	}

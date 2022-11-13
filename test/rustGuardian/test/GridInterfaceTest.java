@@ -1,8 +1,10 @@
 package rustGuardian.test;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.junit.Test;
 
-class MapChunkTest {
+class GridInterfaceTest {
 
 	@Test
 	void test() {

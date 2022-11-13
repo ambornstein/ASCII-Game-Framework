@@ -1,6 +1,7 @@
 package rustGuardian.main;
 
 import javafx.geometry.Point3D;
+import rustGuardian.domain.RelativePos;
 
 public interface IMoveable {
 
@@ -15,6 +16,6 @@ public interface IMoveable {
 	public RelativePos getRelPosition();
 
 	public Point3D getAbsPosition();
-	
+
 	public int sightRad();
 }

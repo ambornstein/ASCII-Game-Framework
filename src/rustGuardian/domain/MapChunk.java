@@ -1,4 +1,4 @@
-package rustGuardian.main;
+package rustGuardian.domain;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -37,17 +37,17 @@ public class MapChunk extends AbstractGrid3D<Tile> {
 
 	/**
 	 * Fills the entire map with specified tile
-	 * 
+	 *
 	 * @param c
 	 *            tile which fills the entire map
 	 */
 	@Override
 	public void fill() {
-		for (int a = 0; a <= super.height(); a++) {
+		for (int a = 0; a <= height(); a++) {
 			add(new ArrayList<ArrayList<Tile>>());
-			for (int b = 0; b <= super.width(); b++) {
+			for (int b = 0; b <= width(); b++) {
 				get(a).add(new ArrayList<Tile>());
-				for (int c = 0; c <= super.length(); c++) {
+				for (int c = 0; c <= length(); c++) {
 					get(a).get(b).add(fillStruct);
 				}
 			}
@@ -73,7 +73,7 @@ public class MapChunk extends AbstractGrid3D<Tile> {
 	 * With a nested for loop it draws a segment as many times as the slope has been
 	 * simplified It then breaks the slope segments up by each square and adds the
 	 * proper slice of the slope From here, tilePlace is called to place the tile
-	 * 
+	 *
 	 * @param startPoint
 	 *            Line goes from this point on the map
 	 * @param endPoint
@@ -100,15 +100,16 @@ public class MapChunk extends AbstractGrid3D<Tile> {
 	/**
 	 * Scans the map to create a list of 1 or 0 for each tile, representing whether
 	 * or not the tile is opaque or transparent
-	 * 
+	 *
 	 * @return
 	 */
 	public int[][][] opaqueScan() {
-		int[][][] opaqueMap = new int[height()][width()][length()];
-		for (int z = 0; z < super.height(); z++) {
-			for (int y = 0; y < super.width(); y++) {
-				for (int x = 0; x < super.length(); x++) {
-					if (!(unitAt(new Point3D(x, y, z)).transparent())) {
+		//System.out.printf("%d %d %d\n",length(), width(),height());
+		int[][][] opaqueMap = new int[height()+1][width()+1][length()+1];
+		for (int z = 0; z <= height(); z++) {
+			for (int y = 0; y <= width(); y++) {
+				for (int x = 0; x <= length(); x++) {
+					if (unitAt(new Point3D(x, y, z)).transparent()) {
 						opaqueMap[z][y][x] = 1;
 					} else {
 						opaqueMap[z][y][x] = 0;
@@ -122,7 +123,7 @@ public class MapChunk extends AbstractGrid3D<Tile> {
 	/**
 	 * Scans the map to create a list of 1 or 0 for each tile, representing whether
 	 * or no the tile is passable or impassible
-	 * 
+	 *
 	 * @return
 	 */
 	public int[][][] blockingScan() {
