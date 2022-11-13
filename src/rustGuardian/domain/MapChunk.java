@@ -2,6 +2,7 @@ package rustGuardian.domain;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
 import javafx.geometry.Point3D;
 
@@ -104,41 +105,25 @@ public class MapChunk extends AbstractGrid3D<Tile> {
 	 * @return
 	 */
 	public int[][][] opaqueScan() {
-		//System.out.printf("%d %d %d\n",length(), width(),height());
-		int[][][] opaqueMap = new int[height()+1][width()+1][length()+1];
-		for (int z = 0; z <= height(); z++) {
-			for (int y = 0; y <= width(); y++) {
-				for (int x = 0; x <= length(); x++) {
-					if (unitAt(new Point3D(x, y, z)).transparent()) {
-						opaqueMap[z][y][x] = 1;
-					} else {
-						opaqueMap[z][y][x] = 0;
-					}
-				}
-			}
-		}
-		return opaqueMap;
+		return(scanTiles(tile -> tile.transparent()));
 	}
 
 	/**
-	 * Scans the map to create a list of 1 or 0 for each tile, representing whether
-	 * or no the tile is passable or impassible
-	 *
-	 * @return
+	 * Scans the map to create a list of 1 or 0 for each tile, representing whether the tile satisfies the condition
 	 */
-	public int[][][] blockingScan() {
-		int[][][] blockMap = new int[height()][width()][length()];
+	public int[][][] scanTiles(Predicate<Tile> cond) {
+		int[][][] returnMatrix = new int[height()+1][width()+1][length()+1];
 		for (int z = 0; z < height(); z++) {
 			for (int y = 0; y < width(); y++) {
 				for (int x = 0; x < length(); x++) {
-					if (!(unitAt(new Point3D(x, y, z)).passable())) {
-						blockMap[z][y][x] = 1;
+					if (cond.test(unitAt(new Point3D(x,y,z)))) {
+						returnMatrix[z][y][x] = 0;
 					} else {
-						blockMap[z][y][x] = 0;
+						returnMatrix[z][y][x] = 1;
 					}
 				}
 			}
 		}
-		return blockMap;
+		return returnMatrix;
 	}
 }
