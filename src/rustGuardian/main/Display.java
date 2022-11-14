@@ -135,7 +135,6 @@ public class Display {
 					}
 				} else {
 					if (resistanceMap[currentY][currentX] == 1 && distance < visRad) {
-						System.out.println('0');
 						blocked = true;
 						castLight(distance + 1, start, leftSlope, xx, xy, yx, yy);
 						newStart = rightSlope;

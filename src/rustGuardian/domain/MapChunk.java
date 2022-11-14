@@ -111,9 +111,9 @@ public class MapChunk extends AbstractGrid3D<Tile> {
 	 */
 	public int[][][] scanTiles(Predicate<Tile> cond) {
 		int[][][] returnMatrix = new int[height() + 1][width() + 1][length() + 1];
-		for (int z = 0; z < height(); z++) {
-			for (int y = 0; y < width(); y++) {
-				for (int x = 0; x < length(); x++) {
+		for (int z = 0; z <= height(); z++) {
+			for (int y = 0; y <= width(); y++) {
+				for (int x = 0; x <= length(); x++) {
 					if (cond.test(unitAt(new Point3D(x, y, z)))) {
 						returnMatrix[z][y][x] = 0;
 					} else {
