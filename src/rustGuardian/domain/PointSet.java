@@ -6,13 +6,15 @@ import javafx.geometry.Point3D;
 import rustGuardian.main.Util;
 
 /**
- * A class that collects Point3Ds. Since it is a collection of points, this class does not store information about the structures located at these locations.
+ * A class that collects Point3Ds. Since it is a collection of points, this
+ * class does not store information about the structures located at these
+ * locations.
  *
  * @author ambor
  */
 public class PointSet extends HashSet<Point3D> {
 	private static final long serialVersionUID = 1L;
-	private	Point3D startCorner;
+	private Point3D startCorner;
 	private Point3D endCorner;
 
 	public PointSet(Point3D startCorner, Point3D endCorner) {
@@ -40,7 +42,7 @@ public class PointSet extends HashSet<Point3D> {
 	}
 
 	public int deltaX(int p) {
-		return p-(int)startCorner.getX();
+		return p - (int) startCorner.getX();
 	}
 
 	public int deltaY(Point3D p) {
@@ -48,7 +50,7 @@ public class PointSet extends HashSet<Point3D> {
 	}
 
 	public int deltaY(int p) {
-		return p-(int)startCorner.getY();
+		return p - (int) startCorner.getY();
 	}
 
 	public int deltaZ(Point3D p) {
@@ -56,8 +58,9 @@ public class PointSet extends HashSet<Point3D> {
 	}
 
 	public int deltaZ(int p) {
-		return p-(int)startCorner.getZ();
+		return p - (int) startCorner.getZ();
 	}
+
 	/**
 	 * 
 	 * @return
@@ -75,13 +78,14 @@ public class PointSet extends HashSet<Point3D> {
 		return new PointSet(newStart, newEnd);
 	}
 
-	/**Creates a rectangular set of points from an initial and final point.
+	/**
+	 * Creates a rectangular set of points from an initial and final point.
 	 *
 	 * @param startCorner Point3D of the lower bound corner
-	 * @param endCorner Point3D of the upper bound corner
+	 * @param endCorner   Point3D of the upper bound corner
 	 */
 	public void construct(Point3D start, Point3D end) { // copies all of the tiles from the startCorner to
-																	// the endCorner to this PointSet
+														// the endCorner to this PointSet
 		this.startCorner = start;
 		this.endCorner = end;
 		if (Util.pointCompare(start, end) == -1) {

@@ -37,10 +37,11 @@ public class ApplicationMain extends JFrame implements KeyListener, MouseListene
 		terminal.addMouseListener(this);
 		terminal.addMouseMotionListener(this);
 		add(terminal);
-		world = new World(new Generator(new RelativePos(2,2,20,20,5)));
+		world = new World(new Generator(new RelativePos(2, 2, 20, 20, 5)));
 		beings = new EntityContainer(world);
 		new Control(beings);
-		new Display(terminal, world, beings, new Point(terminal.getWidthInCharacters(), terminal.getHeightInCharacters()));
+		new Display(terminal, world, beings,
+				new Point(terminal.getWidthInCharacters(), terminal.getHeightInCharacters()));
 		this.setTitle("Rust Guardian");
 		pack();
 		refresh();
@@ -67,8 +68,10 @@ public class ApplicationMain extends JFrame implements KeyListener, MouseListene
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		//System.out.println(e);
-		world.absolutePlace(Control.handleMouse(e, terminal.getCharWidth(), terminal.getCharHeight(),  Display.getFrameOrigin()), Tile.WALL);
+		// System.out.println(e);
+		world.absolutePlace(
+				Control.handleMouse(e, terminal.getCharWidth(), terminal.getCharHeight(), Display.getFrameOrigin()),
+				Tile.WALL);
 		refresh();
 	}
 
@@ -89,7 +92,9 @@ public class ApplicationMain extends JFrame implements KeyListener, MouseListene
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		world.absolutePlace(Control.handleMouse(e, terminal.getCharWidth(), terminal.getCharHeight(),  Display.getFrameOrigin()), Tile.WALL);
+		world.absolutePlace(
+				Control.handleMouse(e, terminal.getCharWidth(), terminal.getCharHeight(), Display.getFrameOrigin()),
+				Tile.WALL);
 		refresh();
 	}
 
@@ -99,8 +104,8 @@ public class ApplicationMain extends JFrame implements KeyListener, MouseListene
 	}
 
 	/**
-	 * Handles the passing of turns. This should only be called when the player makes
-	 * a valid move or if another condition requires time to pass
+	 * Handles the passing of turns. This should only be called when the player
+	 * makes a valid move or if another condition requires time to pass
 	 */
 	// turnPass should only call when a valid move is made by the player
 	// public static void turnPass() {}
@@ -118,6 +123,5 @@ public class ApplicationMain extends JFrame implements KeyListener, MouseListene
 		app.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		app.setVisible(true);
 	}
-
 
 }

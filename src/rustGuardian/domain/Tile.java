@@ -3,8 +3,9 @@ package rustGuardian.domain;
 import java.awt.Color;
 
 public enum Tile {
-	WALL(false, false, '#'), FLOOR(true, true, '.'), NULL(false, false, ' '), OPEN_SPACE(true, true, '–', Color.BLUE,
-			Color.WHITE);
+	WALL(false, false, '#'), FLOOR(true, true, '.'), NULL(false, false, ' '),
+	OPEN_SPACE(true, true, '–', Color.BLUE, Color.WHITE);
+
 	/** Determines Player's ability to make a valid move onto this tile */
 	private boolean passable;
 

@@ -20,7 +20,8 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 		width = dims.y;
 	}
 
-	/**Horizontal (X) dimension of this grid
+	/**
+	 * Horizontal (X) dimension of this grid
 	 *
 	 */
 	@Override
@@ -28,7 +29,8 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 		return length;
 	}
 
-	/**Lateral (Y) dimension of this grid
+	/**
+	 * Lateral (Y) dimension of this grid
 	 *
 	 */
 	@Override
@@ -36,7 +38,8 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 		return width;
 	}
 
-	/**Vertical (Z) dimension of this grid (Always 0 for 2d grid)
+	/**
+	 * Vertical (Z) dimension of this grid (Always 0 for 2d grid)
 	 *
 	 */
 	@Override
@@ -57,8 +60,7 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 	/**
 	 * Return a unit that is located at the provided Point
 	 *
-	 * @param loc
-	 *            Point of the unit that should be returned.
+	 * @param loc Point of the unit that should be returned.
 	 * @return Tile of either a valid unit in case of it being found, or null if not
 	 */
 	@Override
@@ -66,7 +68,7 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 		try {
 			return get(loc.y).get(loc.x);
 		} catch (IndexOutOfBoundsException e) {
-			//System.out.println("Out of bounds of 2D Grid:" + loc);
+			// System.out.println("Out of bounds of 2D Grid:" + loc);
 			return null;
 		}
 	}
@@ -76,10 +78,8 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 	 * certain Direction. It does not have an Object argument because at the current
 	 * state, it tests whether a unit EXISTS, not if it matches a certain Object.
 	 *
-	 * @param loc
-	 *            Point that the test originates from.
-	 * @param dir
-	 *            Direction from the origin point that should be tested for the
+	 * @param loc Point that the test originates from.
+	 * @param dir Direction from the origin point that should be tested for the
 	 *            presence of a grid unit
 	 * @return Boolean where true represents a unit being present in the test, and
 	 *         where false represents a unit not being present
@@ -96,11 +96,9 @@ public abstract class AbstractGrid2D<E> extends ArrayList<ArrayList<E>> implemen
 	/**
 	 * Places or replaces a unit on a specified location.
 	 *
-	 * @param loc
-	 *            Point to place the unit at
-	 * @param unit
-	 *            Unit to place (must be the type that the AbstractGrid2D was)
-	 *            provided at initialization
+	 * @param loc  Point to place the unit at
+	 * @param unit Unit to place (must be the type that the AbstractGrid2D was)
+	 *             provided at initialization
 	 */
 	public void place(Point loc, E unit) {
 		try {

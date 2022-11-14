@@ -11,7 +11,7 @@ import rustGuardian.main.Player;
 
 public class EntityContainer {
 	private HashSet<AbstractMoveable> entityDir; // All entities go here; Define and subdivide 'entity' to be more
-														// specific
+													// specific
 	private Cursor activeCursor; // The active entity that will be controllable
 	private Player activePlayer;
 	private World world;
@@ -51,9 +51,11 @@ public class EntityContainer {
 	public AbstractMoveable activeUnit() {
 		return unit;
 	}
+
 	/**
 	 *
-	 * @param placePoint An absolute point representing what map tile the object will be placed on
+	 * @param placePoint An absolute point representing what map tile the object
+	 *                   will be placed on
 	 */
 	public void placeMoveable(Point3D placePoint) {
 		System.out.println(placePoint);
@@ -64,22 +66,25 @@ public class EntityContainer {
 		if (unit.passesBarriers() || world.relativeFindTile(relPoint).passable()) {
 			unit.setPos(relPoint);
 		} else {
-			System.out.println("Constrained Moveable : " + this + "blocked from placement at + " + relPoint.toAbs() + " by "
-					+ world.relativeFindTile(relPoint) + " : " + relPoint);
+			System.out.println("Constrained Moveable : " + this + "blocked from placement at + " + relPoint.toAbs()
+					+ " by " + world.relativeFindTile(relPoint) + " : " + relPoint);
 		}
 	}
 
 	public void move(Direction d) {
-		RelativePos rel = RelativePos.toRel(unit.absPosition.add(d.offset())); // Convert to relative in order to access the
-																			// methods required for the next if
-																			// statement
-		if ((unit.passesBarriers() || world.relativeFindTile(rel).passable()) && world.getGenerator().compare(rel) == -1) {
-			// if object is constrained by boundaries, test the passability of the tile to move to, and if it is in bounds
-			unit.setPos(unit.absPosition.add(d.offset())); // the test is passed, allowing the real position to be changed
+		RelativePos rel = RelativePos.toRel(unit.absPosition.add(d.offset())); // Convert to relative in order to access
+																				// the
+																				// methods required for the next if
+																				// statement
+		if ((unit.passesBarriers() || world.relativeFindTile(rel).passable())
+				&& world.getGenerator().compare(rel) == -1) {
+			// if object is constrained by boundaries, test the passability of the tile to
+			// move to, and if it is in bounds
+			unit.setPos(unit.absPosition.add(d.offset())); // the test is passed, allowing the real position to be
+															// changed
 			ApplicationMain.refresh();
 		}
 	}
-
 
 	public AbstractMoveable getDefaultPlayerEntity() { // The system is bullshit and must be changed quick
 		for (AbstractMoveable m : entityDir) {

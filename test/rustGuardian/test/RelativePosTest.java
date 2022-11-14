@@ -40,90 +40,111 @@ class RelativePosTest {
 					// 1 = otherPos is greater than onePos
 		assertTrue(gen.compare(outOfBounds) == 1);
 	}
+
 	@Test
 	void test1() {
 		assertTrue(gen.compare(inBounds) == -1);
 	}
+
 	@Test
 	void test2() {
 		assertTrue(gen.compare(negative1) == -2);
 	}
+
 	@Test
 	void test3() {
 		assertTrue(gen.compare(negative2) == -2);
 	}
+
 	@Test
 	void test4() {
 		assertTrue(gen.compare(negative3) == -2);
 	}
+
 	@Test
 	void test5() {
 		assertTrue(gen.compare(negative4) == -2);
 	}
+
 	@Test
 	void test6() {
 		assertTrue(relPos1.toAbs().equals(new Point3D(62, 28, 1)));
 	}
+
 	@Test
 	void test7() {
 		assertTrue(relPos2.toAbs().equals(new Point3D(75, 28, 4)));
 	}
+
 	@Test
 	void test8() {
 		assertTrue(relPos3.toAbs().equals(new Point3D(0, 0, 0)));
 	}
+
 	@Test
 	void test9() {
 		assertTrue(relPos4.toAbs().equals(new Point3D(79, 49, 4)));
 	}
+
 	@Test
 	void test10() {
 		assertTrue(relPos5.toAbs().equals(new Point3D(39, 24, 4)));
 	}
+
 	@Test
 	void test11() {
 		System.out.println(RelativePos.toRel(absPos1));
 		assertEquals(RelativePos.toRel(absPos1), (new RelativePos(new Point(2, 2), new Point3D(23, 4, 2))));
 	}
+
 	@Test
 	void test12() {
 		System.out.println(RelativePos.toRel(absPos2));
 		assertEquals(RelativePos.toRel(absPos2), (new RelativePos(new Point(2, 2), new Point3D(36, 4, 5))));
 	}
+
 	@Test
 	void test13() {
 		assertEquals(RelativePos.toRel(absPos3), (new RelativePos(new Point(1, 1), new Point3D(1, 1, 1))));
 	}
+
 	@Test
 	void test14() {
 		System.out.println(RelativePos.toRel(absPos4));
 		assertEquals(RelativePos.toRel(absPos4), (new RelativePos(new Point(2, 2), new Point3D(40, 25, 5))));
 	}
+
 	@Test
 	void test15() {
 		assertEquals(RelativePos.toRel(absPos5), (new RelativePos(new Point(1, 1), new Point3D(40, 25, 5))));
 	}
+
 	@Test
-	void test16() { //x over bounds
+	void test16() { // x over bounds
 		assertTrue(RelativePos.correctOutOfBounds(new Point3D(99, 49, 4)).equals(new Point3D(79, 49, 4)));
 		assertTrue(RelativePos.correctOutOfBounds(new Point3D(80, 49, 4)).equals(new Point3D(79, 49, 4)));
 	}
+
 	@Test
-	void test17() { //y over bounds
+	void test17() { // y over bounds
 		assertTrue(RelativePos.correctOutOfBounds(new Point3D(79, 99, 4)).equals(new Point3D(79, 49, 4)));
 	}
+
 	@Test
 	void test18() { // z over max
 		assertTrue(RelativePos.correctOutOfBounds(new Point3D(79, 49, 99)).equals(new Point3D(79, 49, 4)));
 	}
+
 	@Test
 	void test19() { // x under min
 		assertTrue(RelativePos.correctOutOfBounds(new Point3D(-99, 49, 4)).equals(new Point3D(0, 49, 4)));
 	}
+
 	@Test
 	void test20() {// y under min
 		assertTrue(RelativePos.correctOutOfBounds(new Point3D(79, -99, 4)).equals(new Point3D(79, 0, 4)));
 	}
+
 	@Test
 	void test21() {// z under min
 		assertTrue(RelativePos.correctOutOfBounds(new Point3D(79, 49, -99)).equals(new Point3D(79, 49, 0)));

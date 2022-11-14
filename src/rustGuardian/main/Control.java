@@ -50,15 +50,14 @@ public class Control {
 		if (e.getID() == KeyEvent.KEY_PRESSED && currentScheme.containsKey(e.getKeyCode())) {
 			if (e.isShiftDown()) {
 				switch (press) {
-					case "up":
-						beings.move(Direction.UP);
-						break;
-					case "down":
-						beings.move(Direction.DOWN);
-						break;
+				case "up":
+					beings.move(Direction.UP);
+					break;
+				case "down":
+					beings.move(Direction.DOWN);
+					break;
 				}
-			}
-			else {
+			} else {
 				switch (press) {
 				case "north":
 					beings.move(Direction.NORTH);
@@ -92,15 +91,15 @@ public class Control {
 	}
 
 	public static Point3D handleMouse(MouseEvent e, int x, int y, Point3D origin) {
-		return handleMouse(e, new Point(x,y), origin);
+		return handleMouse(e, new Point(x, y), origin);
 	}
 
 	public static Point3D handleMouse(MouseEvent e, int x, int y, int originX, int originY, int originZ) {
-		return handleMouse(e, new Point(x,y), new Point3D(originX, originY, originZ));
+		return handleMouse(e, new Point(x, y), new Point3D(originX, originY, originZ));
 	}
 
 	public static Point3D handleMouse(MouseEvent e, Point termLoc, Point3D origin) {
-		Point3D mouseLoc = new Point3D(Math.floor(e.getX()/termLoc.getX()), Math.floor(e.getY()/termLoc.getY()), 0);
-		return new Point3D(origin.getX()+mouseLoc.getX(), origin.getY()+mouseLoc.getY(), origin.getZ());
+		Point3D mouseLoc = new Point3D(Math.floor(e.getX() / termLoc.getX()), Math.floor(e.getY() / termLoc.getY()), 0);
+		return new Point3D(origin.getX() + mouseLoc.getX(), origin.getY() + mouseLoc.getY(), origin.getZ());
 	}
 }

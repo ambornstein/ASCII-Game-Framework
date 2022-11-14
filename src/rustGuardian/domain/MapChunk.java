@@ -39,8 +39,7 @@ public class MapChunk extends AbstractGrid3D<Tile> {
 	/**
 	 * Fills the entire map with specified tile
 	 *
-	 * @param c
-	 *            tile which fills the entire map
+	 * @param c tile which fills the entire map
 	 */
 	@Override
 	public void fill() {
@@ -75,10 +74,8 @@ public class MapChunk extends AbstractGrid3D<Tile> {
 	 * simplified It then breaks the slope segments up by each square and adds the
 	 * proper slice of the slope From here, tilePlace is called to place the tile
 	 *
-	 * @param startPoint
-	 *            Line goes from this point on the map
-	 * @param endPoint
-	 *            to this point on the map
+	 * @param startPoint Line goes from this point on the map
+	 * @param endPoint   to this point on the map
 	 */
 	/*
 	 * public void drawLine(Point startPoint, Point endPoint) { double dx =
@@ -105,18 +102,19 @@ public class MapChunk extends AbstractGrid3D<Tile> {
 	 * @return
 	 */
 	public int[][][] opaqueScan() {
-		return(scanTiles(tile -> tile.transparent()));
+		return (scanTiles(tile -> tile.transparent()));
 	}
 
 	/**
-	 * Scans the map to create a list of 1 or 0 for each tile, representing whether the tile satisfies the condition
+	 * Scans the map to create a list of 1 or 0 for each tile, representing whether
+	 * the tile satisfies the condition
 	 */
 	public int[][][] scanTiles(Predicate<Tile> cond) {
-		int[][][] returnMatrix = new int[height()+1][width()+1][length()+1];
+		int[][][] returnMatrix = new int[height() + 1][width() + 1][length() + 1];
 		for (int z = 0; z < height(); z++) {
 			for (int y = 0; y < width(); y++) {
 				for (int x = 0; x < length(); x++) {
-					if (cond.test(unitAt(new Point3D(x,y,z)))) {
+					if (cond.test(unitAt(new Point3D(x, y, z)))) {
 						returnMatrix[z][y][x] = 0;
 					} else {
 						returnMatrix[z][y][x] = 1;

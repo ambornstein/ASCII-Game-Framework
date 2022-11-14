@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import javafx.geometry.Point3D;
 import rustGuardian.main.Util;
 
-/**A region composed of many chunks
+/**
+ * A region composed of many chunks
  *
  * @author ambor
  *
@@ -32,7 +33,7 @@ public class World extends AbstractGrid2D<MapChunk> {
 			add(new ArrayList<MapChunk>());
 			for (int x = 0; x <= super.length(); x++) {
 				get(y).add(new MapChunk(gen.tilePoint())); // Each placement needs to be a new
-																				// MapChunk
+															// MapChunk
 			}
 		}
 	}
@@ -45,8 +46,7 @@ public class World extends AbstractGrid2D<MapChunk> {
 		Point chunkLoc = Util.decrement(loc.chunkPoint());
 		try {
 			unitAt(chunkLoc).place(Util.decrement(loc.tilePoint()), unit);
-		}
-		catch (IndexOutOfBoundsException i) {
+		} catch (IndexOutOfBoundsException i) {
 			absolutePlace(RelativePos.correctOutOfBounds(loc.toAbs()), unit);
 		}
 	}
@@ -60,8 +60,7 @@ public class World extends AbstractGrid2D<MapChunk> {
 		Point3D tileLoc = Util.decrement(loc.tilePoint());
 		try {
 			return unitAt(chunkLoc).unitAt(tileLoc);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			return Tile.NULL;
 		}
 	}
@@ -81,8 +80,9 @@ public class World extends AbstractGrid2D<MapChunk> {
 			Point3D destinationCorner = new Point3D(dims.getX() + (dims.getX() * dir.offset().getX()),
 					dims.getY() + (dims.getY() * dir.offset().getY()),
 					dims.getZ() + (dims.getZ() * dir.offset().getZ()));
-			borderSet = new PointSet(RelativePos.correctOutOfBounds(originCorner), RelativePos.correctOutOfBounds(destinationCorner));
-			//borderSet.forEach(point -> System.out.println(point));
+			borderSet = new PointSet(RelativePos.correctOutOfBounds(originCorner),
+					RelativePos.correctOutOfBounds(destinationCorner));
+			// borderSet.forEach(point -> System.out.println(point));
 			borderSet.forEach(point -> {
 				absolutePlace(point, Tile.WALL);
 			});
@@ -99,8 +99,7 @@ public class World extends AbstractGrid2D<MapChunk> {
 		for (Point3D p : set) {
 			if (Util.pointCompare(Point3D.ZERO, p) == 1) {
 				returnChunk.place(p.subtract(set.startCorner()), Tile.NULL);
-			}
-			else {
+			} else {
 				returnChunk.place(p.subtract(set.startCorner()), absoluteFindTile(p));
 			}
 		}
