@@ -30,22 +30,16 @@ public class EntityContainer {
 	public void addEntity(AbstractMoveable entity) {
 		entityDir.add(entity);
 	}
-
-	public Player activePlayer() {
+	
+	public Player activatePlayer() {
+		unit = activePlayer;
 		return activePlayer;
 	}
-
-	public void activatePlayer() {
-		unit = activePlayer();
-	}
-
-	public Cursor activeCursor() {
-		placeMoveable(activePlayer().getRelPosition());
+	
+	public Cursor activateCursor() {
+		unit = activeCursor;
+		placeMoveable(activePlayer.getRelPosition());
 		return activeCursor;
-	}
-
-	public void activateCursor() {
-		unit = activeCursor();
 	}
 
 	public AbstractMoveable activeUnit() {
@@ -84,24 +78,6 @@ public class EntityContainer {
 															// changed
 			ApplicationMain.refresh();
 		}
-	}
-
-	public AbstractMoveable getDefaultPlayerEntity() { // The system is bullshit and must be changed quick
-		for (AbstractMoveable m : entityDir) {
-			if (m.getClass() == Player.class) {
-				return m;
-			}
-		}
-		return null;
-	}
-
-	public AbstractMoveable getDefaultCursorEntity() {
-		for (AbstractMoveable m : entityDir) {
-			if (m.getClass() == Cursor.class) {
-				return m;
-			}
-		}
-		return null;
 	}
 
 	public ArrayList<AbstractMoveable> getAllVisibleEntity() {

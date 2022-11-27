@@ -26,14 +26,16 @@ public class Display {
 	private static float[][] visMap;
 	private static int[][] resistanceMap;
 	private static AbstractMoveable focusObject;
+	private static Player playerObject;
 	private static Point3D focusLocation;
+	private static Point3D playerLocation;
 
 	public Display(AsciiPanel terminal, World world, EntityContainer beings, Point screenSize) {
 		Display.world = world;
 		Display.terminal = terminal;
 		Display.beings = beings;
 		Display.screenSize = new Point3D(screenSize.x, screenSize.y, 0);
-		focusObject = beings.activeUnit();
+		playerObject = beings.activatePlayer();
 	}
 
 	public static Point3D getFrameOrigin() {
@@ -41,14 +43,15 @@ public class Display {
 	}
 
 	public static void playerPerspectiveDisplay() {
+		playerLocation = playerObject.getAbsPosition();
+		focusObject = beings.activeUnit();
 		focusLocation = focusObject.getAbsPosition();
 		frameOrigin = RelativePos.correctOutOfBounds(focusLocation.subtract(screenSize));
 		frameDestination = RelativePos.correctOutOfBounds(frameOrigin.add(screenSize));
 		PointSet frame = new PointSet(frameOrigin, frameDestination);
 		MapChunk viewChunk = world.copyGrid(frame);
-		calculateFOV(viewChunk.opaqueScan()[0], (int) focusLocation.getX(), (int) focusLocation.getY(),
-				focusObject.sightRad());
-		Point3D playerSite = focusLocation.subtract(frameOrigin);
+		calculateFOV(viewChunk.opaqueScan()[0], (int) playerLocation.getX(), (int) playerLocation.getY(),
+				playerObject.sightRad());
 		for (int j = (int) frameOrigin.getY(); j < visMap.length; j++) {
 			for (int i = (int) frameOrigin.getX(); i < visMap[0].length; i++) {
 				if (visMap[j][i] == 1.0f) {
@@ -61,8 +64,10 @@ public class Display {
 				}
 			}
 		}
-		terminal.write(focusObject.getSymbol(), (int) (playerSite.getX() - frameOrigin.getX()),
-				(int) (playerSite.getY() - frameOrigin.getY()));
+		for (AbstractMoveable ent : beings.getAllVisibleEntity()) {
+			Point3D symbolSite = ent.getAbsPosition().subtract(frameOrigin);
+			terminal.write(ent.getSymbol(), (int) symbolSite.getX(), (int) symbolSite.getY());
+		}
 		terminal.write(String.valueOf(frameOrigin.getZ()), 0, 0);
 	}
 

@@ -73,13 +73,12 @@ public class Control {
 					break;
 				case "look_mode":
 					switchScheme(lookScheme);
-					beings.activateCursor();
-					beings.activeCursor().setVisible(true);
+					beings.activateCursor().setVisible(true);
 					break;
 				case "standard_mode":
 					switchScheme(standardScheme);
+					beings.activeUnit().setVisible(false);
 					beings.activatePlayer();
-					beings.activeCursor().setVisible(false);
 					break;
 				}
 			}
