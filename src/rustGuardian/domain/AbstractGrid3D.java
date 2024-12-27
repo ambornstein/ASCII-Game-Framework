@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import javafx.geometry.Point3D;
 
 /**
- * Abstract for the purpose of creating 3D grids
+ * 3D Matrix containing any class
  *
  * @author ambor
  *

@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 /**
- * Abstract for the purposes of creating 2D grids.
+ * 2D matrix of any class
  *
  * @author ambor
  *

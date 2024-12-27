@@ -37,7 +37,7 @@ public class ApplicationMain extends JFrame implements KeyListener, MouseListene
 		terminal.addMouseListener(this);
 		terminal.addMouseMotionListener(this);
 		add(terminal);
-		world = new World(new Generator(new RelativePos(2, 2, 20, 20, 5)));
+		world = new World(Generator.getInstance());
 		beings = new EntityContainer(world);
 		new Control(beings);
 		new Display(terminal, world, beings,

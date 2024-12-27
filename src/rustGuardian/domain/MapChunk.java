@@ -6,6 +6,11 @@ import java.util.function.Predicate;
 
 import javafx.geometry.Point3D;
 
+/**A 3 dimensional matrix of tiles. Takes dimensions from the Generator and composes the overall world, a 2d matrix of 
+ * 
+ * @author Andrei
+ *
+ */
 public class MapChunk extends AbstractGrid3D<Tile> {
 	private static final long serialVersionUID = 1060623638149583738L;
 	Tile fillStruct = Tile.FLOOR;

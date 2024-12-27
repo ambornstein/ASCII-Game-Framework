@@ -1,14 +1,22 @@
 package rustGuardian.domain;
 
 /**
- * Subclass of RelativePos that contains parameters to be used in the generation
- * of a world
+ * Singleton Subclass of RelativePos that stores parameters of world generation.
  */
 public class Generator extends RelativePos {
-	Generator() {
-		super(2, 2, 40, 25, 5);
-	}
+	private static Generator instance;
 
+	private Generator() {
+		super(2, 2, 40, 25, 5);
+	};
+	
+	public static Generator getInstance() {
+		if (instance == null) {
+			instance = new Generator();
+		}
+		return instance;
+	}
+	
 	public Generator(RelativePos bounds) {
 		super(bounds);
 	}

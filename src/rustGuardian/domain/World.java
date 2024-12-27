@@ -7,7 +7,7 @@ import javafx.geometry.Point3D;
 import rustGuardian.main.Util;
 
 /**
- * A region composed of many chunks
+ * A 2d matrix of MapChunks
  *
  * @author ambor
  *
