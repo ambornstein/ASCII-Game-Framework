@@ -1,6 +1,10 @@
-# ASCII Game Framework
-A basic framework for a Roguelike game with ASCII graphics. 
+## About This Project
+A basic framework for a traditional Roguelike game with ASCII graphics.
 
-It supports multiple z levels and modifying the tiles of the map in 3D. The game space is generated from parameters that can be used to change the chunk size and the amount of chunks on the map.
+![roguelike-demo](https://github.com/user-attachments/assets/534e7692-5cee-41ca-94bc-4332d0243eaf)
 
-The most impressive feature is a shadowcasting algorithm that was adapted from a tutorial.
+## Key Features
+* Multiple Z levels
+* Adjustable world boundary dimensions including chunk size and the amount of chunks on the map
+* Tile drawing and modification with mouse input
+* Recursive shadowcasting to calculate visibility of tiles
